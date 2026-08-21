@@ -39,8 +39,8 @@ input,button{border:1px solid var(--line);border-radius:10px;padding:10px 12px;f
 </main>
 
 <script>
-const SUPABASE_URL="VUL_HIER_JE_SUPABASE_URL_IN";
-const SUPABASE_ANON_KEY="VUL_HIER_JE_SUPABASE_ANON_KEY_IN";
+const SUPABASE_URL="https://cauzrmausrfbulfwbvoi.supabase.co";
+const SUPABASE_ANON_KEY="sb_publishable_AzPgKHCxskSzfCQnIGgy-A_ZH6HuNAG";
 const ENABLED=!SUPABASE_URL.startsWith("VUL_")&&!SUPABASE_ANON_KEY.startsWith("VUL_");
 const sb=ENABLED?window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY):null;
 let currentSession="",timer=null;
