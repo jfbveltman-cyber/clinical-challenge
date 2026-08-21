@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Clinical Challenge v5 – Dynamische ABCDE simulatie</title>
+<title>Clinical Challenge v6 Classroom</title>
 <style>
 :root{
   --bg:#edf2f7;--card:#fff;--ink:#102238;--muted:#68788a;--navy:#0e263f;
@@ -88,9 +88,20 @@ details{margin-top:14px}summary{cursor:pointer;font-weight:700}
 </style>
 </head>
 <body>
+<div id="classroomOverlay" style="position:fixed;inset:0;background:#0e263ff2;z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px">
+  <div style="width:min(440px,100%);background:white;border-radius:18px;padding:22px;box-shadow:0 20px 60px #0005">
+    <div class="tag">v6 Classroom</div>
+    <h1 style="margin-top:10px">Start de klassikale casus</h1>
+    <p class="muted">Vul de sessiecode van je docent in. Er worden geen namen opgeslagen; alleen een anonieme student-ID en de vijf domeinscores.</p>
+    <label><b>Sessiecode</b></label>
+    <input id="sessionInput" placeholder="bijv. HV24B" maxlength="20" style="width:100%;font-size:18px;text-transform:uppercase;margin:7px 0 12px">
+    <button class="primary" style="width:100%" onclick="joinSession()">Start casus</button>
+    <p id="joinError" class="small" style="color:#9b2c2c;margin-top:10px"></p>
+  </div>
+</div>
 <header>
   <div class="head">
-    <div><strong>Clinical Challenge</strong> <span class="badge">• v5 dynamische ABCDE-simulatie</span></div>
+    <div><strong>Clinical Challenge</strong> <span class="badge">• v6 Classroom</span> <span id="sessionBadge" class="tag" style="margin-left:8px;background:#ffffff20;color:white">geen sessie</span></div>
     <button class="secondary" onclick="toggleSettings()">⚙ Docent</button>
   </div>
 </header>
@@ -197,7 +208,60 @@ details{margin-top:14px}summary{cursor:pointer;font-weight:700}
 </div>
 </main>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+// ============================================================
+// CLASSROOM / SUPABASE
+// Vul hier éénmalig je eigen Supabase URL en ANON KEY in.
+// ============================================================
+const SUPABASE_URL = "VUL_HIER_JE_SUPABASE_URL_IN";
+const SUPABASE_ANON_KEY = "VUL_HIER_JE_SUPABASE_ANON_KEY_IN";
+const CLASSROOM_ENABLED = !SUPABASE_URL.startsWith("VUL_") && !SUPABASE_ANON_KEY.startsWith("VUL_");
+const sb = CLASSROOM_ENABLED ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+let SESSION_CODE = "";
+let STUDENT_ID = localStorage.getItem("cc_student_id");
+if(!STUDENT_ID){
+  STUDENT_ID = (crypto.randomUUID ? crypto.randomUUID() : "s-"+Math.random().toString(36).slice(2)+Date.now());
+  localStorage.setItem("cc_student_id", STUDENT_ID);
+}
+let lastSync = 0;
+
+async function joinSession(){
+  const input=document.getElementById("sessionInput");
+  const err=document.getElementById("joinError");
+  const code=(input.value||"").trim().toUpperCase().replace(/[^A-Z0-9_-]/g,"");
+  if(code.length<2){err.textContent="Vul eerst de sessiecode van je docent in.";return}
+  if(!CLASSROOM_ENABLED){
+    err.textContent="Classroom is nog niet gekoppeld aan Supabase. Vul eerst de URL en anon key in de HTML in.";
+    return;
+  }
+  SESSION_CODE=code;
+  document.getElementById("sessionBadge").textContent="sessie "+code;
+  document.getElementById("classroomOverlay").style.display="none";
+  await syncClassroom(true);
+}
+
+async function syncClassroom(force=false){
+  if(!CLASSROOM_ENABLED || !SESSION_CODE || typeof scores==="undefined") return;
+  const now=Date.now();
+  if(!force && now-lastSync<1500) return;
+  lastSync=now;
+  const payload={
+    session_code:SESSION_CODE,
+    student_id:STUDENT_ID,
+    herkennen:+(scores.recognize||0),
+    prioriteren:+(scores.prioritize||0),
+    handelen:+(scores.act||0),
+    evalueren:+(scores.reassess||0),
+    communiceren:+(scores.communicate||0),
+    completed:!!caseEnded,
+    updated_at:new Date().toISOString()
+  };
+  const {error}=await sb.from("classroom_results").upsert(payload,{onConflict:"session_code,student_id"});
+  if(error) console.warn("Classroom sync:",error.message);
+}
+
 // ============================================================
 // SNEL AANPASSEN IN DE CODE
 // Pas vooral dit CONFIG-object aan als je een nieuwe casus bouwt.
@@ -410,6 +474,7 @@ function frame(now){
     simSeconds+=simDtSec;
     physiologyTick(simDtSec/60);
     updateMonitor();
+    syncClassroom();
     if(simSeconds>=CONFIG.durationMin*60){addEvent("Maximale casusduur bereikt","bad");caseEnded=true;running=false;renderDebrief()}
   }
   drawECG(now/1000);
@@ -456,6 +521,7 @@ function updateMonitor(){
 function addEvent(text,tone="info",extra={}){
  const ev={t:simSeconds,text,tone,...extra};timeline.push(ev);
  renderTimeline();
+ syncClassroom();
 }
 function renderTimeline(){
  const el=document.getElementById("timeline");if(!el)return;
@@ -484,7 +550,7 @@ function submitSBAR(){
  const completed=vals.filter(x=>x.length>=8).length;
  scores.communicate=Math.min(2,scores.communicate+completed*.25);
  addEvent(`SBAR afgerond (${completed}/4 onderdelen inhoudelijk ingevuld)`,completed===4?"good":"bad");
- caseEnded=true;running=false;renderDebrief();
+ caseEnded=true;running=false;syncClassroom(true);renderDebrief();
 }
 
 function renderDebrief(){
