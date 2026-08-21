@@ -214,7 +214,7 @@ details{margin-top:14px}summary{cursor:pointer;font-weight:700}
 // CLASSROOM / SUPABASE
 // Vul hier éénmalig je eigen Supabase URL en ANON KEY in.
 // ============================================================
-const SUPABASE_URL = "VUL_HIER_JE_SUPABASE_URL_IN";
+const SUPABASE_URL = "https://cauzrmausrfbulfwbvoi.supabase.co";
 const SUPABASE_ANON_KEY = "VUL_HIER_JE_SUPABASE_ANON_KEY_IN";
 const CLASSROOM_ENABLED = !SUPABASE_URL.startsWith("VUL_") && !SUPABASE_ANON_KEY.startsWith("VUL_");
 const sb = CLASSROOM_ENABLED ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
