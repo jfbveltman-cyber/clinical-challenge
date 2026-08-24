@@ -2,692 +2,687 @@
 <html lang="nl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Clinical Challenge v6 Classroom</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Clinical Challenge v6.0</title>
 <style>
 :root{
-  --bg:#edf2f7;--card:#fff;--ink:#102238;--muted:#68788a;--navy:#0e263f;
-  --blue:#3157d5;--green:#11a36a;--amber:#d18900;--red:#d34a4a;--line:#d9e2ec;
-  --monitor:#050d0a;--monline:#17392d;--soft:#f5f8fb
+ --bg:#eef3f8;--card:#fff;--ink:#102238;--muted:#6b7a8c;--navy:#0f2740;
+ --blue:#3157d5;--green:#15905a;--amber:#b96d00;--red:#ca3d3d;--line:#d9e2ec;
+ --soft:#f5f8fb;--mon:#07110d;--mon2:#0b1a14
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);font-family:Arial,Helvetica,sans-serif;color:var(--ink)}
-header{background:var(--navy);color:#fff;padding:13px 18px;position:sticky;top:0;z-index:20}
-.head{max-width:1320px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.badge{font-size:12px;opacity:.78}
-main{max-width:1320px;margin:16px auto;padding:0 12px 36px}
-.layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(320px,.72fr);gap:16px}.monitorcol{position:sticky;top:68px;align-self:start}
-.card{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 5px 20px #0e263f0e}
-.pad{padding:18px}
-h1{font-size:25px;margin:5px 0 10px}h2{font-size:19px;margin:0 0 11px}h3{font-size:15px;margin:14px 0 8px}
-p{line-height:1.45;margin:8px 0}.muted{color:var(--muted)}.small{font-size:12px}
-.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.tag{display:inline-block;background:#edf2f8;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:700}
-.progress{height:7px;background:#e4eaf0;border-radius:999px;overflow:hidden;margin-bottom:13px}.progress>div{height:100%;background:var(--blue);width:0;transition:.3s}
-.primary,.secondary,.dangerbtn,.choice,.exam,.intervention{
- border:1px solid var(--line);border-radius:11px;padding:11px 12px;font-size:14px;cursor:pointer;background:#fff;color:var(--ink)
-}
-.primary{background:var(--blue);color:#fff;border-color:var(--blue);font-weight:700}
-.secondary{background:var(--soft)}
-.dangerbtn{background:#fff1f1;border-color:#efc5c5;color:#8b2626}
-.choice{width:100%;text-align:left;margin:5px 0;background:#fff}
-.choice:hover,.exam:hover,.intervention:hover{border-color:#9bacc0;box-shadow:0 3px 10px #102a4312}
-.feedback{border-radius:11px;padding:12px 14px;margin:12px 0;border:1px solid}
-.good{background:#edf9f3;border-color:#b9e5cc;color:#0c643c}.warn{background:#fff7e8;border-color:#eed2a4;color:#7a4c08}.bad{background:#fff0f0;border-color:#efc2c2;color:#8b2626}
-.sectionbox{background:var(--soft);border:1px solid #e4eaf0;border-radius:12px;padding:12px;margin:10px 0}
-.abcde{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin:10px 0 14px}
-.abcde div{padding:8px 4px;text-align:center;background:#eef2f6;border-radius:8px;font-weight:800;color:#8b98a8;font-size:12px}
-.abcde .active{background:#e8edff;color:var(--blue);outline:2px solid #b5c1ff}.abcde .done{background:#e4f6ec;color:#14784a}
-.examgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.exam{text-align:left;background:#fff}
-.exam.done{background:#edf9f3;border-color:#b9e5cc}.resultbox{margin-top:8px;font-size:13px;line-height:1.4}
-.monitor{background:var(--monitor);border-radius:14px;padding:11px;color:#dbffe9;box-shadow:inset 0 0 0 1px #153b2a}
-.monHead{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#8fd6aa;margin-bottom:4px}
-.clock{font-variant-numeric:tabular-nums;font-weight:800;color:#fff}
-.trace{height:64px;border-top:1px solid var(--monline);border-bottom:1px solid var(--monline);margin:5px 0;position:relative;overflow:hidden}
-.trace canvas{width:100%;height:100%;display:block}
-.monGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:7px}
-.monVal{background:#091712;border:1px solid #173a2b;border-radius:9px;padding:7px;min-width:0}
-.monVal .label{font-size:9px;color:#82b792;text-transform:uppercase;letter-spacing:.3px}
-.monVal .num{font-size:21px;font-weight:800;margin-top:1px;white-space:nowrap;font-variant-numeric:tabular-nums}
-.monVal.danger .num{color:#ff6767}.monVal.warn .num{color:#ffc04a}.monVal.ok .num{color:#72f7ad}
-.kpi{display:flex;justify-content:space-between;gap:8px;font-size:11px;color:#a9d0b8;margin-top:7px}.kpi b{color:#fff}
-.interventions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px}.intervention{text-align:left;background:#f8fafc;padding:10px}
-.intervention[disabled]{opacity:.45;cursor:not-allowed}
-select,input{border:1px solid var(--line);border-radius:9px;padding:8px;background:white;max-width:100%}
-.controlrow{display:grid;grid-template-columns:1fr auto;gap:7px;align-items:center;margin:6px 0}
-.timeline{max-height:250px;overflow:auto;margin-top:9px}.event{border-left:3px solid #ccd7e3;padding:6px 0 6px 9px;margin:5px 0;font-size:12px}.event.good{background:none;border-top:0;border-right:0;border-bottom:0;border-color:#21a366;color:var(--ink)}.event.bad{background:none;border-top:0;border-right:0;border-bottom:0;border-color:#d34a4a;color:var(--ink)}.event.info{border-color:#6688d8}
-.scoregrid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}.scorecard{background:var(--soft);padding:9px;border-radius:10px;text-align:center;font-size:11px}.scorecard b{display:block;font-size:20px;margin-top:4px}
-details{margin-top:14px}summary{cursor:pointer;font-weight:700}
-.settings{display:grid;grid-template-columns:1fr 1fr;gap:8px}.setting label{font-size:11px;color:var(--muted);display:block;margin-bottom:3px}.setting input{width:100%}
-.hidden{display:none!important}
-@media(max-width:900px){
- .layout{grid-template-columns:1fr}.monitorcol{order:-1;position:sticky;top:52px;z-index:10}.pad{padding:12px}.monGrid{grid-template-columns:repeat(6,1fr)}
- .monitorcol .pad{padding:8px}.monitorcol h3,.monitorcol .controlrow,.monitorcol .interventions,.monitorcol details{display:none}
-}
-@media(max-width:520px){
- header{padding:8px 10px}.head strong{font-size:14px}.badge{display:none}main{padding:0 5px 20px;margin:5px auto}.layout{gap:6px}.card{border-radius:10px}.pad{padding:9px}
- h1{font-size:18px;margin-top:8px}.trace{height:34px;margin:3px 0}.monitor{padding:6px;border-radius:10px}
- .monHead{font-size:9px}.monGrid{grid-template-columns:repeat(6,1fr);gap:3px;margin-top:4px}
- .monVal{padding:4px 3px;border-radius:7px;text-align:center}.monVal .label{font-size:7px}.monVal .num{font-size:14px!important}
- .kpi{font-size:9px;margin-top:4px}.abcde{margin:7px 0 9px}.abcde div{font-size:9px;padding:5px 1px}
- .examgrid,.settings{grid-template-columns:1fr 1fr}.interventions{grid-template-columns:1fr 1fr}.scoregrid{grid-template-columns:repeat(3,1fr)}
- .exam,.intervention,.primary,.secondary,.dangerbtn,.choice{min-height:44px;font-size:13px;padding:10px}
- .sectionbox{padding:9px;margin:7px 0}.row{gap:6px}
-}
-@media(max-width:380px){
- .monVal .num{font-size:12px!important}.monVal .label{font-size:6.5px}.trace{height:30px}
- .head button{font-size:11px;padding:7px 8px}.primary,.secondary,.exam,.intervention{font-size:12px}
-}
+header{background:var(--navy);color:#fff;padding:12px 14px;position:sticky;top:0;z-index:20}
+.hwrap{max-width:980px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:10px}
+main{max-width:980px;margin:12px auto;padding:0 10px 30px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 5px 20px #0f27400c}
+.pad{padding:14px}
+.patient{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+h1{font-size:22px;margin:0 0 5px} h2{font-size:17px;margin:0 0 10px}
+p{line-height:1.45}.muted{color:var(--muted)} .small{font-size:12px}
+.tag{display:inline-block;background:var(--soft);padding:4px 8px;border-radius:999px;font-size:11px;font-weight:700}
+.status{font-size:11px;font-weight:700;padding:5px 8px;border-radius:999px;background:#fff0f0;color:var(--red)}
+.status.mid{background:#fff6e7;color:#8b5a00}.status.good{background:#ebf8f1;color:var(--green)}
 
-.mobileActions{display:none}
-@media(max-width:900px){
- .mobileActions{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:6px}
- .mobileActions button{min-height:42px;border:1px solid var(--line);border-radius:9px;background:#fff;font-size:12px;padding:7px 4px}
- .mobileActions .wide{grid-column:span 2}
+.monitor{background:var(--mon);color:#dffff0;border-radius:11px;padding:6px 7px;margin-top:8px;position:relative;overflow:hidden}
+.monTop{display:flex;justify-content:space-between;font-size:9px;color:#88c9a3;margin-bottom:4px}
+
+.waveStack{position:relative;margin-top:2px}
+.waveCanvas{display:block;width:100%;height:36px;background:#07110d;border-top:1px solid #123626;border-bottom:1px solid #123626}
+.plethCanvas{height:24px;margin-top:2px}
+.waveLabel{position:absolute;left:6px;top:4px;font-size:8px;color:#78d89a;z-index:2;background:#07110dcc;padding:1px 4px;border-radius:4px}
+.plethLabel{top:41px;color:#67c8ff}
+to{transform:translateX(-50%)}}
+.vitals{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:5px}
+.v{background:var(--mon2);border:1px solid #17372a;border-radius:7px;padding:4px 5px;transition:.25s}
+.v .l{font-size:8px;color:#8ec6a4;text-transform:uppercase}.v .n{font-size:16px;font-weight:800}
+.v.danger .n{color:#ff6868}.v.warn .n{color:#ffc24e}.v.ok .n{color:#7cffad}
+.flash{animation:flash .9s}
+@keyframes flash{0%{transform:scale(1)}40%{transform:scale(1.05);box-shadow:0 0 0 3px #fff5}100%{transform:scale(1)}}
+.monBottom{display:flex;justify-content:space-between;font-size:9px;color:#9dc9ad;margin-top:5px}
+
+.tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:12px}
+.tab{border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 4px;font-size:11px;font-weight:700;cursor:pointer}
+.tab.active{background:#e9eeff;border-color:#aebfff;color:var(--blue)}
+.panel{margin-top:10px}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.action{border:1px solid var(--line);background:#fff;border-radius:11px;padding:10px;text-align:left;cursor:pointer;font-size:13px;min-height:54px}
+.action b{display:block;margin-bottom:2px}.action span{font-size:11px;color:var(--muted)}
+.action:disabled{opacity:.5;cursor:not-allowed}
+.notice{border-radius:11px;padding:10px 11px;margin-top:10px;font-size:12px;line-height:1.4}
+.goodfb{background:#edf9f3;border:1px solid #bce4ce;color:#0d663e}
+.warnfb{background:#fff7e8;border:1px solid #efd2a4;color:#7d4d08}
+.badfb{background:#fff0f0;border:1px solid #efc2c2;color:#8a2626}
+
+.log{margin-top:12px;max-height:150px;overflow:auto;background:var(--soft);border-radius:12px;padding:8px}
+.logline{font-size:11px;padding:6px 4px;border-bottom:1px solid #e2e8f0}
+.footerBtns{display:flex;gap:8px;margin-top:10px}
+.btn{border:none;border-radius:10px;padding:10px 12px;font-weight:700;cursor:pointer}
+.primary{background:var(--blue);color:#fff}.secondary{background:#e9eef5;color:var(--ink)}
+.result{font-size:38px;font-weight:800;color:var(--green);text-align:center}
+textarea{width:100%;min-height:58px;border:1px solid var(--line);border-radius:10px;padding:9px;margin:4px 0 9px}
+.ddIntro{margin:0 0 10px;line-height:1.45}
+.ddOptions{display:grid;gap:8px;margin:10px 0 12px}
+.ddOption{display:flex;align-items:flex-start;gap:10px;border:1px solid var(--line);border-radius:11px;padding:10px;background:#fff;cursor:pointer}
+.ddOption:has(input:checked){border-color:var(--blue);background:#eef5ff}
+.ddOption input{margin-top:3px;accent-color:var(--blue)}
+.scoreGrid{display:grid;gap:7px;margin:12px 0}
+.scoreRow{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;background:var(--soft);border:1px solid var(--line);border-radius:10px;padding:9px 10px;font-size:12px}
+.scoreRow b:last-child{font-size:14px;color:var(--blue)}
+.readonly{background:#eef3f8;color:#405166}
+.labWrap{overflow-x:auto;margin-top:8px}
+.labTable{width:100%;border-collapse:collapse;min-width:520px;background:#fff;color:var(--ink);font-size:11px}
+.labTable th,.labTable td{border:1px solid var(--line);padding:6px 7px;text-align:left;white-space:nowrap}
+.labTable th{background:#eaf0f6;font-weight:800}
+.labTable .group td{background:var(--navy);color:#fff;font-weight:800}
+.labTable .high{color:var(--red);font-weight:800}.labTable .low{color:var(--blue);font-weight:800}.labTable .normal{color:var(--green);font-weight:700}
+.diagnosticResults:empty{display:none}.diagnosticResults{margin-top:12px;display:grid;gap:10px}.resultCard{border:1px solid var(--line);border-radius:12px;padding:10px;background:var(--soft)}.resultCard h2{margin-bottom:4px}.resultCard p:last-child{margin-bottom:0}
+.classGate{position:fixed;inset:0;background:#0f2740e8;z-index:100;display:grid;place-items:center;padding:18px}.classGateCard{width:min(430px,100%);background:#fff;border-radius:18px;padding:22px;box-shadow:0 22px 60px #0005}.classGateCard h2{font-size:22px}.classGateCard label{display:block;font-size:12px;font-weight:800;margin:10px 0}.classGateCard input{display:block;width:100%;border:1px solid var(--line);border-radius:10px;padding:11px;margin-top:5px}.classGateCard #classCode{text-transform:uppercase;letter-spacing:.1em}.gateBtns{display:flex;gap:8px;margin-top:14px}.classStatus{display:none;background:#e9eeff;color:var(--blue);padding:5px 8px;border-radius:999px;font-size:10px;font-weight:800}.teacherLink{color:#cfe0ef;text-decoration:none;font-size:11px;font-weight:700}
+@media(min-width:760px){
+ .layout{display:grid;grid-template-columns:1.05fr .95fr;gap:14px}
+ .monitor{margin-top:0}.actions{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:420px){
+ .pad{padding:11px}.vitals{grid-template-columns:repeat(3,1fr)}.v .n{font-size:17px}
+ .tabs{grid-template-columns:repeat(2,1fr)}.action{min-height:50px;padding:9px}
+ h1{font-size:20px}
 }
 </style>
 </head>
 <body>
-<div id="classroomOverlay" style="position:fixed;inset:0;background:#0e263ff2;z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px">
-  <div style="width:min(440px,100%);background:white;border-radius:18px;padding:22px;box-shadow:0 20px 60px #0005">
-    <div class="tag">v6 Classroom</div>
-    <h1 style="margin-top:10px">Start de klassikale casus</h1>
-    <p class="muted">Vul de sessiecode van je docent in. Er worden geen namen opgeslagen; alleen een anonieme student-ID en de vijf domeinscores.</p>
-    <label><b>Sessiecode</b></label>
-    <input id="sessionInput" placeholder="bijv. HV24B" maxlength="20" style="width:100%;font-size:18px;text-transform:uppercase;margin:7px 0 12px">
-    <button class="primary" style="width:100%" onclick="joinSession()">Start casus</button>
-    <p id="joinError" class="small" style="color:#9b2c2c;margin-top:10px"></p>
-  </div>
-</div>
-<header>
-  <div class="head">
-    <div><strong>Clinical Challenge</strong> <span class="badge">• v6 Classroom</span> <span id="sessionBadge" class="tag" style="margin-left:8px;background:#ffffff20;color:white">geen sessie</span></div>
-    <button class="secondary" onclick="toggleSettings()">⚙ Docent</button>
-  </div>
-</header>
-
+<header><div class="hwrap"><strong>Clinical Challenge</strong><div style="display:flex;align-items:center;gap:9px"><span id="classStatus" class="classStatus"></span><a class="teacherLink" href="/docent" target="_top">Docent</a><span class="small">v6.1 • live klas</span></div></div></header>
+<div id="classGate" class="classGate"><div class="classGateCard"><span class="tag">Klassikaal of zelfstandig</span><h2>Start de Clinical Challenge</h2><p class="muted">Vul de groepscode van je docent in om je voortgang live te delen. Gebruik eventueel alleen je voornaam of een afgesproken pseudoniem.</p><label>Naam of pseudoniem<input id="studentName" autocomplete="name" maxlength="40" placeholder="Bijvoorbeeld Sam"></label><label>Groepscode<input id="classCode" maxlength="6" placeholder="ABC123"></label><div class="gateBtns"><button class="btn primary" onclick="joinClassroom()">Deelnemen</button><button class="btn secondary" onclick="soloPractice()">Zelfstandig oefenen</button></div><div id="gateFeedback"></div></div></div>
 <main>
-<div id="settingsCard" class="card hidden" style="margin-bottom:12px">
-  <div class="pad">
-    <h2>Docentinstellingen</h2>
-    <p class="muted small">Pas de startwaarden en reacties aan en klik daarna op <b>Toepassen & herstarten</b>. Hiervoor hoef je de HTML-code niet te wijzigen.</p>
-    <div class="settings">
-      <div class="setting"><label>Start HF</label><input id="cfg_hr" type="number"></div>
-      <div class="setting"><label>Start AF</label><input id="cfg_rr" type="number"></div>
-      <div class="setting"><label>Start SpO₂ (%)</label><input id="cfg_spo2" type="number"></div>
-      <div class="setting"><label>Start syst. RR</label><input id="cfg_sbp" type="number"></div>
-      <div class="setting"><label>Start diast. RR</label><input id="cfg_dbp" type="number"></div>
-      <div class="setting"><label>Temperatuur</label><input id="cfg_temp" type="number" step=".1"></div>
-      <div class="setting"><label>Verslechtering per minuut (0–3)</label><input id="cfg_deterioration" type="number" min="0" max="3" step=".1"></div>
-      <div class="setting"><label>Simulatiesnelheid (x)</label><input id="cfg_speed" type="number" min=".5" max="20" step=".5"></div>
-      <div class="setting"><label>O₂-respons sterkte (0–2)</label><input id="cfg_o2response" type="number" min="0" max="2" step=".1"></div>
-      <div class="setting"><label>Casusduur (minuten)</label><input id="cfg_duration" type="number" min="3" max="30"></div>
-    </div>
-    <div class="row" style="margin-top:10px">
-      <button class="primary" onclick="applySettings()">Toepassen & herstarten</button>
-      <button class="secondary" onclick="resetDefaults()">Standaardwaarden</button>
-    </div>
-  </div>
-</div>
-
 <div class="layout">
-  <section class="card">
-    <div class="pad">
-      <div class="progress"><div id="bar"></div></div>
-      <div id="abcde" class="abcde"></div>
-      <div id="app"></div>
-      <div id="mobilePanel" class="sectionbox hidden">
-        <b>Meer interventies</b>
-        <div class="controlrow"><label for="o2mode_mobile" class="small"><b>Zuurstofinstelling</b></label>
-          <select id="o2mode_mobile">
-            <option value="nasal2">Neusbril 2 L/min</option>
-            <option value="nasal5">Neusbril 5 L/min</option>
-            <option value="nrb15">Non-rebreathing 15 L/min</option>
-          </select>
-        </div>
-        <div class="interventions" style="display:grid">
-          <button class="intervention" onclick="quickO2(true)">🫁 Start/wijzig O₂</button>
-          <button class="intervention" onclick="doIntervention('fluids500')">💧 NaCl 500 ml</button>
-          <button class="intervention" onclick="doIntervention('help')">📞 Hulp inschakelen</button>
-          <button class="intervention" onclick="doIntervention('reassess')">🔁 Herbeoordelen</button>
-        </div>
+  <section class="card"><div class="pad">
+    <div class="patient">
+      <div>
+        <span class="tag">Acute zorg • demo</span>
+        <h1>Mevrouw De Vries, 67 jaar</h1>
+        <p class="muted" style="margin:0">“Ik krijg zo moeilijk lucht…”</p>
+      </div>
+      <span id="patientStatus" class="status">instabiel</span>
+    </div>
+
+    <div class="monitor">
+      <div class="monTop"><span>BED 4 • LIVE</span><span id="clock">00:00</span></div>
+      
+      <div class="waveStack">
+        <div class="waveLabel">ECG II</div>
+        <canvas id="ecgCanvas" class="waveCanvas"></canvas>
+        <div class="waveLabel plethLabel">PLETH</div>
+        <canvas id="plethCanvas" class="waveCanvas plethCanvas"></canvas>
+      </div>
+      <div class="vitals">
+        <div id="vh" class="v"><div class="l">HF</div><div class="n" id="hr">118</div></div>
+        <div id="vs" class="v"><div class="l">SpO₂</div><div class="n"><span id="spo2">87</span>%</div></div>
+        <div id="vr" class="v"><div class="l">AF</div><div class="n" id="rr">30</div></div>
+        <div id="vb" class="v"><div class="l">RR</div><div class="n"><span id="sbp">92</span>/<span id="dbp">58</span></div></div>
+        <div id="vt" class="v"><div class="l">Temp</div><div class="n"><span id="temp">38.9</span>°</div></div>
+        <div id="vo" class="v"><div class="l">O₂</div><div class="n" id="o2">UIT</div></div>
+      </div>
+      <div class="monBottom"><span>NEWS2 oefen: <b id="news">—</b></span><span id="trend">geen interventie</span></div>
+    </div>
+
+    <div class="log" id="log"><div class="logline">Casus gestart. Patiënt aangesloten op monitor.</div></div>
+    <div id="feedback"></div>
+    <div id="teacherMessage"></div>
+  </div></section>
+
+  <section class="card"><div class="pad">
+    <h2>Wat wil je doen?</h2>
+    <div class="tabs">
+      <button class="tab active" data-tab="onderzoek" onclick="showTab('onderzoek',this)">ABCDE</button>
+      <button class="tab" data-tab="interventies" onclick="showTab('interventies',this)">Interventies</button>
+      <button class="tab" data-tab="dd" onclick="showTab('dd',this)">Differentiaaldiagnose</button>
+      <button class="tab" data-tab="diagnostiek" onclick="showTab('diagnostiek',this)">Aanvullend onderzoek</button>
+      <button class="tab" data-tab="communicatie" onclick="showTab('communicatie',this)">Communicatie</button>
+    </div>
+
+    <div id="onderzoek" class="panel">
+      <div class="actions">
+        <button class="action" onclick="act('airway',this)"><b>A • Luchtweg beoordelen</b><span>Kan patiënt spreken? Is de luchtweg vrij?</span></button>
+        <button class="action" onclick="act('breathing',this)"><b>B • Breathing beoordelen</b><span>AF, SpO₂, auscultatie</span></button>
+        <button class="action" onclick="act('circulation',this)"><b>C • Circulation beoordelen</b><span>Pols, RR, perfusie</span></button>
+        <button class="action" onclick="act('disability',this)"><b>D • Disability beoordelen</b><span>Bewustzijn, glucose</span></button>
+        <button class="action" onclick="act('exposure',this)"><b>E • Exposure beoordelen</b><span>Temperatuur, inspectie</span></button>
       </div>
     </div>
-  </section>
 
-  <aside class="card monitorcol">
-    <div class="pad">
-      <div class="monitor">
-        <div class="monHead"><span>BED 04 • Mevr. De Vries</span><span><span class="clock" id="clock">00:00</span> • <span id="statusText">instabiel</span></span></div>
-        <div class="trace"><canvas id="ecg"></canvas></div>
-<div class="monHead" style="margin-top:3px"><span>RESP</span><span id="respLabel">30/min</span></div>
-<div class="trace" style="height:44px"><canvas id="resp"></canvas></div>
-        <div class="monGrid">
-          <div id="m_hr" class="monVal"><div class="label">HF</div><div class="num" id="hr">118</div></div>
-          <div id="m_spo2" class="monVal"><div class="label">SpO₂</div><div class="num"><span id="spo2">87</span>%</div></div>
-          <div id="m_rr" class="monVal"><div class="label">AF</div><div class="num" id="rr">30</div></div>
-          <div id="m_bp" class="monVal"><div class="label">NIBP</div><div class="num" style="font-size:17px"><span id="sbp">92</span>/<span id="dbp">58</span></div></div>
-          <div id="m_temp" class="monVal"><div class="label">Temp</div><div class="num" style="font-size:17px"><span id="temp">38.9</span>°</div></div>
-          <div id="m_o2" class="monVal"><div class="label">O₂</div><div class="num" style="font-size:15px" id="o2">kamerlucht</div></div>
-        </div>
-        <div class="kpi"><span>NEWS2-oefenscore</span><b id="news">—</b></div>
-      </div>
-
-      <h3>Interventies</h3>
-      <div class="controlrow"><label for="o2mode" class="small"><b>Zuurstof</b></label>
-        <select id="o2mode">
-          <option value="nasal2">Neusbril 2 L/min</option>
-          <option value="nasal5">Neusbril 5 L/min</option>
-          <option value="nrb15">Non-rebreathing 15 L/min</option>
-        </select>
-      </div>
-      <div class="interventions">
-        <button class="intervention" onclick="doIntervention('oxygen')">🫁 Start/wijzig O₂</button>
-        <button class="intervention" id="btnSit" onclick="doIntervention('situp')">🛏️ Rechtop</button>
-        <button class="intervention" onclick="doIntervention('fluids250')">💧 NaCl 250 ml</button>
-        <button class="intervention" onclick="doIntervention('fluids500')">💧 NaCl 500 ml</button>
-        <button class="intervention" id="btnHelp" onclick="doIntervention('help')">📞 Hulp inschakelen</button>
-        <button class="intervention" id="btnReassess" onclick="doIntervention('reassess')">🔁 Herbeoordelen</button>
-      </div>
-
-      <details>
-        <summary>Live tijdlijn</summary>
-        <div class="timeline" id="timeline"></div>
-      </details>
-
-      <div class="mobileActions">
-        <button onclick="quickO2()">🫁 O₂</button>
-        <button onclick="doIntervention('situp')">🛏️ Rechtop</button>
-        <button onclick="doIntervention('fluids250')">💧 250 ml</button>
-        <button onclick="doIntervention('help')">📞 Hulp</button>
-        <button class="wide" onclick="doIntervention('reassess')">🔁 Herbeoordelen</button>
-        <button class="wide" onclick="toggleMobilePanel()">⋯ Meer interventies</button>
+    <div id="interventies" class="panel" style="display:none">
+      <div class="actions">
+        <button class="action" onclick="act('oxygen',this)"><b>🫁 Zuurstof</b><span>Start volgens oefenprotocol</span></button>
+        <button class="action" onclick="act('situp',this)"><b>🛏️ Rechtop</b><span>Ademarbeid verminderen</span></button>
+        <button class="action" onclick="act('iv',this)"><b>💉 Infuus</b><span>IV-toegang voorbereiden</span></button>
+        <button class="action" onclick="act('caprefill',this)"><b>C • Capillaire refill controleren</b><span>Handeling: beoordeel de perifere perfusie</span></button>
+        <button class="action" onclick="act('fluids',this)"><b>💧 Vocht</b><span>Oefeninterventie circulatie</span></button>
+        <button class="action" onclick="act('glucose',this)"><b>D • Glucose controleren</b><span>Onderzoekshandeling: sluit hypo- of hyperglykemie uit</span></button>
+        <button class="action" id="reassessB" disabled onclick="act('reassessB',this)"><b>↻ B herbeoordelen</b><span>Na zuurstof: AF, SpO₂, ademarbeid en auscultatie</span></button>
+        <button class="action" id="reassessC" disabled onclick="act('reassessC',this)"><b>↻ C herbeoordelen</b><span>Na vocht: HF, RR, capillaire refill en kliniek</span></button>
+        <button class="action" onclick="act('wait',this)"><b>⏱️ Afwachten</b><span>2 minuten niets doen</span></button>
       </div>
     </div>
-  </aside>
+
+    <div id="dd" class="panel" style="display:none">
+      <h2>Differentiaaldiagnose</h2>
+      <p class="ddIntro">Kies maximaal drie mogelijke diagnoses die op dit moment bij het klinische beeld passen. Je hoeft je keuze niet te beargumenteren.</p>
+      <div class="ddOptions" id="ddOptions">
+        <label class="ddOption"><input type="checkbox" name="dd" value="pneumonie-sepsis" onchange="limitDD(this)"><span><b>Pneumonie met sepsis</b></span></label>
+        <label class="ddOption"><input type="checkbox" name="dd" value="longembolie" onchange="limitDD(this)"><span><b>Longembolie</b></span></label>
+        <label class="ddOption"><input type="checkbox" name="dd" value="hartfalen" onchange="limitDD(this)"><span><b>Acuut gedecompenseerd hartfalen</b></span></label>
+        <label class="ddOption"><input type="checkbox" name="dd" value="acs" onchange="limitDD(this)"><span><b>Acuut coronair syndroom</b></span></label>
+        <label class="ddOption"><input type="checkbox" name="dd" value="copd" onchange="limitDD(this)"><span><b>COPD-exacerbatie</b></span></label>
+      </div>
+      <button class="btn primary" id="submitDD" onclick="submitDD()">Diagnoses vastleggen</button>
+      <p class="muted small">Bij dit onderdeel kies je alleen diagnoses. Er wordt niet gevraagd om argumenten of aanvullend onderzoek.</p>
+    </div>
+
+    <div id="diagnostiek" class="panel" style="display:none">
+      <div class="actions">
+        <button class="action" onclick="act('ecg',this)"><b>ECG aanvragen</b><span>Resultaat na korte vertraging</span></button>
+        <button class="action" onclick="act('bloodgas',this)"><b>Bloedgas</b><span>Resultaat verschijnt later</span></button>
+        <button class="action" onclick="act('lab',this)"><b>Laboratorium</b><span>Volledig bloedbeeld • nierfunctie • infectie</span></button>
+      </div>
+    </div>
+
+    <div id="communicatie" class="panel" style="display:none">
+      <div class="actions">
+        <button class="action" onclick="act('help',this)"><b>📞 Extra hulp</b><span>Vroege escalatie</span></button>
+        <button class="action" onclick="act('sbar',this)"><b>SBAR starten</b><span>Korte overdracht</span></button>
+      </div>
+    </div>
+
+    <div id="diagnosticResults" class="diagnosticResults"></div>
+
+    <div class="footerBtns">
+      <button class="btn secondary" onclick="restart()">Opnieuw</button>
+      <button class="btn primary" onclick="finish()">Casus afronden</button>
+    </div>
+    <p class="muted small">Onderwijsprototype. Reacties zijn vooraf geprogrammeerd en geen fysiologisch voorspelmodel. Alle vitale waarden zijn begrensd binnen plausibele simulatorbandbreedtes. ECG en pleth zijn visuele onderwijs-simulaties en geen diagnostische registraties.</p>
+  </div></section>
 </div>
 </main>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-// ============================================================
-// CLASSROOM / SUPABASE
-// Vul hier éénmalig je eigen Supabase URL en ANON KEY in.
-// ============================================================
-const SUPABASE_URL = "https://cauzrmausrfbulfwbvoi.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_AzPgKHCxskSzfCQnIGgy-A_ZH6HuNAG";
-const CLASSROOM_ENABLED = !SUPABASE_URL.startsWith("VUL_") && !SUPABASE_ANON_KEY.startsWith("VUL_");
-const sb = CLASSROOM_ENABLED ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+let v={hr:118,rr:30,spo2:87,sbp:92,dbp:58,temp:38.9,oxygen:false};
 
-let SESSION_CODE = "";
-let STUDENT_ID = localStorage.getItem("cc_student_id");
-if(!STUDENT_ID){
-  STUDENT_ID = (crypto.randomUUID ? crypto.randomUUID() : "s-"+Math.random().toString(36).slice(2)+Date.now());
-  localStorage.setItem("cc_student_id", STUDENT_ID);
-}
-let lastSync = 0;
-
-async function joinSession(){
-  const input=document.getElementById("sessionInput");
-  const err=document.getElementById("joinError");
-  const code=(input.value||"").trim().toUpperCase().replace(/[^A-Z0-9_-]/g,"");
-  if(code.length<2){err.textContent="Vul eerst de sessiecode van je docent in.";return}
-  if(!CLASSROOM_ENABLED){
-    err.textContent="Classroom is nog niet gekoppeld aan Supabase. Vul eerst de URL en anon key in de HTML in.";
-    return;
-  }
-  SESSION_CODE=code;
-  document.getElementById("sessionBadge").textContent="sessie "+code;
-  document.getElementById("classroomOverlay").style.display="none";
-  await syncClassroom(true);
-}
-
-async function syncClassroom(force=false){
-  if(!CLASSROOM_ENABLED || !SESSION_CODE || typeof scores==="undefined") return;
-  const now=Date.now();
-  if(!force && now-lastSync<1500) return;
-  lastSync=now;
-  const payload={
-    session_code:SESSION_CODE,
-    student_id:STUDENT_ID,
-    herkennen:+(scores.recognize||0),
-    prioriteren:+(scores.prioritize||0),
-    handelen:+(scores.act||0),
-    evalueren:+(scores.reassess||0),
-    communiceren:+(scores.communicate||0),
-    completed:!!caseEnded,
-    updated_at:new Date().toISOString()
-  };
-  const {error}=await sb.from("classroom_results").upsert(payload,{onConflict:"session_code,student_id"});
-  if(error) console.warn("Classroom sync:",error.message);
-}
-
-// ============================================================
-// SNEL AANPASSEN IN DE CODE
-// Pas vooral dit CONFIG-object aan als je een nieuwe casus bouwt.
-// Dezelfde waarden zijn ook via de knop "Docent" bovenaan instelbaar.
-// ============================================================
-const DEFAULT_CONFIG = {
-  patientName: "Mevr. De Vries",
-  caseTitle: "Acute dyspneu",
-  durationMin: 10,
-  simulationSpeed: 4,      // 1 echte seconde = 4 simulatieseconden
-  deterioration: 1.0,      // 0 = stabiel, 1 = standaard, 2-3 = sneller verslechteren
-  oxygenResponse: 1.0,
-  start: {hr:118, rr:30, spo2:87, sbp:92, dbp:58, temp:38.9},
-  limits: {
-    hr:[35,180], rr:[4,45], spo2:[70,100], sbp:[60,220], dbp:[35,130], temp:[34,41]
-  }
-};
-let CONFIG = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
-
-// toestand
-let v, simSeconds, lastTick, running, abcdeIndex, findings, interventions, timeline, scores, treatmentTargets, caseEnded;
-const abcdeLetters=["A","B","C","D","E"];
-
-function clamp(x,a,b){return Math.max(a,Math.min(b,x))}
-function lerp(current,target,rate){return current+(target-current)*rate}
-
-function resetState(){
-  const mobO2=document.getElementById("o2mode_mobile");
-  const deskO2=document.getElementById("o2mode");
-  if(mobO2&&deskO2)mobO2.value=deskO2.value;
-  v={...CONFIG.start, oxygenMode:"room", oxygen:false, positioned:false, fluids:0, help:false, conscious:true};
-  simSeconds=0; lastTick=performance.now(); running=true; abcdeIndex=0; findings=new Set(); interventions=[];
-  timeline=[]; scores={recognize:0,prioritize:0,act:0,reassess:0,communicate:0};
-  treatmentTargets={spo2:null,rr:null,hr:null,sbp:null,dbp:null};
-  caseEnded=false;
-  renderABCDE(); renderStage(); addEvent("Casus gestart","info");
-  updateMonitor();
-}
-
-function renderABCDE(){
-  const el=document.getElementById("abcde");
-  el.innerHTML=abcdeLetters.map((l,i)=>`<div class="${i<abcdeIndex?'done':i===abcdeIndex?'active':''}">${l}</div>`).join("");
-  document.getElementById("bar").style.width=`${Math.min(100,(abcdeIndex/5)*100)}%`;
-}
-
-const exams = {
- A:[
-  ["Patiënt laten spreken","Ze kan korte zinnen spreken; geen stridor of hoorbare obstructie.","airway"],
-  ["Inspecteer mond/keel","Geen zichtbaar vreemd voorwerp of forse zwelling.","mouth"]
- ],
- B:[
-  ["Ademfrequentie tellen",()=>`AF ${Math.round(v.rr)}/min, oppervlakkig en verhoogde ademarbeid.`,"rr"],
-  ["SpO₂ beoordelen",()=>`SpO₂ ${Math.round(v.spo2)}% bij ${o2Label()}.`,"spo2"],
-  ["Auscultatie longen","Rechts basaal verminderd ademgeruis; links vesiculair.","lungs"],
-  ["Thorax inspecteren","Symmetrische thoraxexcursies, gebruik hulpademhalingsspieren.","chest"]
- ],
- C:[
-  ["Pols beoordelen",()=>`Pols ${Math.round(v.hr)}/min, snel en zwak palpabel.`,"pulse"],
-  ["Bloeddruk meten",()=>`Bloeddruk ${Math.round(v.sbp)}/${Math.round(v.dbp)} mmHg.`,"bp"],
-  ["Capillary refill","CRT ongeveer 4 seconden; extremiteiten koel.","crt"],
-  ["Huid beoordelen","Bleek en klam.","skin"]
- ],
- D:[
-  ["Bewustzijn AVPU","Alert, angstig en adequaat aanspreekbaar.","avpu"],
-  ["Glucose meten","Glucose 6,4 mmol/L.","glucose"],
-  ["Pupillen beoordelen","Pupillen isocoor en lichtreactief.","pupils"]
- ],
- E:[
-  ["Temperatuur meten",()=>`Temperatuur ${v.temp.toFixed(1)} °C.`,"temp"],
-  ["Lichaam inspecteren","Geen zichtbaar trauma. Geen huiduitslag. Patiënt is klam.","body"]
- ]
+/* Centrale fysiologische grenzen voor deze onderwijs-simulator.
+   Elke wijziging van vitale parameters wordt hierop begrensd. */
+const LIMITS = {
+  hr:   {min:25, max:220},   // hartfrequentie /min
+  rr:   {min:4,  max:60},    // ademfrequentie /min
+  spo2: {min:50, max:100},   // saturatie %
+  sbp:  {min:50, max:220},   // systolische RR mmHg
+  dbp:  {min:20, max:130},   // diastolische RR mmHg
+  temp: {min:30, max:43}     // temperatuur °C
 };
 
-function renderStage(){
-  if(caseEnded)return renderDebrief();
-  const app=document.getElementById("app");
-  const L=abcdeLetters[abcdeIndex];
-  if(!L) return renderSBAR();
-  const intro={
-    A:"Beoordeel eerst of de luchtweg vrij en veilig is.",
-    B:"Beoordeel ventilatie, oxygenatie en ademarbeid.",
-    C:"Beoordeel circulatie en perifere perfusie.",
-    D:"Beoordeel bewustzijn en reversibele neurologische oorzaken.",
-    E:"Maak de beoordeling compleet en voorkom warmteverlies."
-  }[L];
+function clamp(val,min,max){ return Math.min(max,Math.max(min,val)); }
 
-  app.innerHTML=`
-    <div class="row"><span class="tag">${CONFIG.caseTitle}</span><span class="tag">${L} – ${["Airway","Breathing","Circulation","Disability","Exposure"][abcdeIndex]}</span></div>
-    ${abcdeIndex===0?`<h1>Je treft een benauwde patiënt aan</h1><p>Mevrouw De Vries zit rechtop in bed, is bleek, klam en angstig en zegt: <em>“Ik krijg zo moeilijk lucht.”</em></p>`:`<h1>${L} – ${["Airway","Breathing","Circulation","Disability","Exposure"][abcdeIndex]}</h1>`}
-    <p>${intro}</p>
-    <div class="sectionbox">
-      <b>Onderzoek</b>
-      <div class="examgrid" id="examgrid">
-        ${exams[L].map((e,i)=>`<button class="exam ${findings.has(e[2])?'done':''}" onclick="doExam('${L}',${i})">${e[0]}</button>`).join("")}
-      </div>
-      <div class="resultbox" id="resultbox">${latestFindingFor(L)}</div>
-    </div>
-    <div class="row">
-      <button class="primary" onclick="advanceABCDE()">ABCDE: verder naar ${L==="E"?"SBAR":abcdeLetters[abcdeIndex+1]}</button>
-      <button class="secondary" onclick="doIntervention('reassess')">🔁 Herbeoordelen</button>
-    </div>
-    <p class="muted small">De patiënt verandert ondertussen door. Interventies kunnen op ieder moment via de monitor worden uitgevoerd.</p>`;
+function normalizeVitals(){
+  v.hr   = clamp(v.hr,   LIMITS.hr.min,   LIMITS.hr.max);
+  v.rr   = clamp(v.rr,   LIMITS.rr.min,   LIMITS.rr.max);
+  v.spo2 = clamp(v.spo2, LIMITS.spo2.min, LIMITS.spo2.max);
+  v.sbp  = clamp(v.sbp,  LIMITS.sbp.min,  LIMITS.sbp.max);
+  v.dbp  = clamp(v.dbp,  LIMITS.dbp.min,  LIMITS.dbp.max);
+  v.temp = clamp(v.temp, LIMITS.temp.min, LIMITS.temp.max);
+
+  // Houd bloeddrukcombinaties fysiologisch logisch.
+  if(v.dbp >= v.sbp - 5) v.dbp = Math.max(LIMITS.dbp.min, v.sbp - 10);
+  if(v.sbp <= v.dbp + 5) v.sbp = Math.min(LIMITS.sbp.max, v.dbp + 10);
 }
+let t=0, finished=false, used=new Set(), score=0, critical=[], interval;
+let ddSubmitted=false, selectedDD=[], ddFeedbackHtml="", ddPoints=0;
+let sbarSubmitted=false, sbarPoints=0;
+const expectedABCDE=["airway","breathing","circulation","disability","exposure"];
+const abcdeOrder=[], actionTimes={};
+const pendingReassess=new Set(), completedReassess=new Set();
+const classroom={code:"",participantId:"",displayName:"",joined:false};
+let teacherFeedbackAt="";
+const actionLabels={airway:"A beoordeeld",breathing:"B beoordeeld",circulation:"C beoordeeld",disability:"D beoordeeld",exposure:"E beoordeeld",oxygen:"Zuurstof gestart",situp:"Rechtop gezet",iv:"IV-toegang",caprefill:"Capillaire refill",fluids:"Vocht gestart",glucose:"Glucose gecontroleerd",reassessB:"B herbeoordeeld",reassessC:"C herbeoordeeld",wait:"Afgewacht",ecg:"ECG aangevraagd",bloodgas:"Bloedgas aangevraagd",lab:"Lab aangevraagd",help:"Hulp ingeschakeld",sbar:"SBAR gestart"};
 
-function latestFindingFor(L){
-  const ev=[...timeline].reverse().find(x=>x.kind==="exam" && x.letter===L);
-  return ev?`<b>Laatste bevinding:</b> ${ev.text}`:"Kies een onderzoek om gegevens te verzamelen.";
+async function postClassEvent(type,action,data={}){
+ if(!classroom.joined)return;
+ try{await fetch("/api/events",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({type,code:classroom.code,participantId:classroom.participantId,displayName:classroom.displayName,action,data})})}catch(error){console.warn("Registratie tijdelijk niet beschikbaar",error)}
 }
-
-function doExam(L,i){
-  const [label,result,key]=exams[L][i];
-  const text=typeof result==="function"?result():result;
-  findings.add(key);
-  addEvent(`${L}: ${label} → ${text}`,"info",{kind:"exam",letter:L,text});
-  if((key==="spo2"||key==="rr"||key==="bp"||key==="crt") && scores.recognize<2) scores.recognize+=1;
-  renderStage();
+async function pollTeacherFeedback(){
+ if(!classroom.joined)return;
+ try{const response=await fetch(`/api/feedback?code=${encodeURIComponent(classroom.code)}`,{cache:"no-store"});const result=await response.json();const host=document.getElementById("teacherMessage");if(result.feedback){if(result.feedbackAt!==teacherFeedbackAt){teacherFeedbackAt=result.feedbackAt||"";host.innerHTML="";const box=document.createElement("div");box.className="notice warnfb";const title=document.createElement("b");title.textContent="Live feedback van de docent: ";box.appendChild(title);box.appendChild(document.createTextNode(result.feedback));host.appendChild(box)}}else{host.innerHTML=""}}catch(error){console.warn("Docentfeedback tijdelijk niet beschikbaar",error)}
 }
-
-function advanceABCDE(){
-  const L=abcdeLetters[abcdeIndex];
-  const minimum={A:["airway"],B:["rr","spo2"],C:["bp"],D:["avpu"],E:["temp"]}[L];
-  const completed=minimum.every(k=>findings.has(k));
-  if(completed){scores.prioritize=Math.min(2,scores.prioritize+0.4)}
-  else addEvent(`${L} verlaten zonder alle kernbeoordelingen`,"bad");
-  abcdeIndex++;
-  renderABCDE(); renderStage();
+async function joinClassroom(){
+ const displayName=document.getElementById("studentName").value.trim();
+ const code=document.getElementById("classCode").value.trim().toUpperCase();
+ if(!displayName||code.length<4){document.getElementById("gateFeedback").innerHTML='<div class="notice warnfb">Vul een naam of pseudoniem en een geldige groepscode in.</div>';return}
+ const participantId=crypto.randomUUID();
+ try{
+  const response=await fetch("/api/events",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({type:"join",code,participantId,displayName,action:"Aangemeld"})});
+  const result=await response.json();if(!response.ok)throw new Error(result.error||"Aanmelden mislukt");
+  Object.assign(classroom,{code,participantId,displayName,joined:true});
+  document.getElementById("classGate").style.display="none";const badge=document.getElementById("classStatus");badge.style.display="inline-block";badge.textContent=`Groep ${code}`;
+  pollTeacherFeedback();setInterval(pollTeacherFeedback,5000);
+ }catch(error){document.getElementById("gateFeedback").innerHTML=`<div class="notice badfb">${error instanceof Error?error.message:"Aanmelden mislukt."}</div>`}
 }
+function soloPractice(){document.getElementById("classGate").style.display="none"}
+const initialGroup=new URLSearchParams(location.search).get("groep");if(initialGroup)document.getElementById("classCode").value=initialGroup.toUpperCase();
 
-function o2Label(){
-  return {room:"kamerlucht",nasal2:"neusbril 2 L",nasal5:"neusbril 5 L",nrb15:"NRB 15 L"}[v.oxygenMode]||"kamerlucht";
+function recordAssessment(action){
+ if(!expectedABCDE.includes(action))return;
+ abcdeOrder.push(action);
+ actionTimes[action]=t;
 }
-
-function doIntervention(kind){
-  if(caseEnded)return;
-  if(kind==="oxygen"){
-    const mode=document.getElementById("o2mode").value;
-    v.oxygen=true;v.oxygenMode=mode;
-    const gain={nasal2:4,nasal5:7,nrb15:11}[mode]*CONFIG.oxygenResponse;
-    treatmentTargets.spo2=clamp(v.spo2+gain,CONFIG.limits.spo2[0],98);
-    treatmentTargets.rr=Math.max(18,v.rr-({nasal2:2,nasal5:4,nrb15:6}[mode]));
-    treatmentTargets.hr=Math.max(75,v.hr-({nasal2:3,nasal5:6,nrb15:9}[mode]));
-    addEvent(`Zuurstof gestart: ${o2Label()}`,"good");
-    interventions.push({t:simSeconds,label:`O₂ ${o2Label()}`});
-    scores.act=Math.min(2,scores.act+1);
-  }
-  if(kind==="situp"&&!v.positioned){
-    v.positioned=true;treatmentTargets.rr=Math.max(18,v.rr-2);treatmentTargets.spo2=Math.min(98,v.spo2+1);
-    document.getElementById("btnSit").disabled=true;
-    addEvent("Patiënt rechterop gepositioneerd","good"); interventions.push({t:simSeconds,label:"Rechtop"});
-    scores.act=Math.min(2,scores.act+.5);
-  }
-  if(kind==="fluids250"||kind==="fluids500"){
-    const ml=kind==="fluids250"?250:500;v.fluids+=ml;
-    treatmentTargets.sbp=Math.min(140,v.sbp+(ml===250?7:13));
-    treatmentTargets.dbp=Math.min(90,v.dbp+(ml===250?4:7));
-    treatmentTargets.hr=Math.max(75,v.hr-(ml===250?4:7));
-    addEvent(`NaCl ${ml} ml gestart (oefencasus)`,"good"); interventions.push({t:simSeconds,label:`NaCl ${ml} ml`});
-    scores.act=Math.min(2,scores.act+.5);
-  }
-  if(kind==="help"&&!v.help){
-    v.help=true;document.getElementById("btnHelp").disabled=true;
-    addEvent("Extra hulp/arts vroegtijdig ingeschakeld","good"); interventions.push({t:simSeconds,label:"Hulp ingeschakeld"});
-    scores.communicate=Math.min(2,scores.communicate+1);
-  }
-  if(kind==="reassess"){
-    addEvent(`Herbeoordeling: HF ${Math.round(v.hr)}, AF ${Math.round(v.rr)}, SpO₂ ${Math.round(v.spo2)}%, RR ${Math.round(v.sbp)}/${Math.round(v.dbp)}`,"good");
-    scores.reassess=Math.min(2,scores.reassess+1); interventions.push({t:simSeconds,label:"Herbeoordeling"});
-  }
-  updateMonitor(); renderStage();
+function setReassessment(letter){
+ pendingReassess.add(letter);
+ const btn=document.getElementById(`reassess${letter}`);
+ if(btn)btn.disabled=false;
 }
-
-function physiologyTick(dtMin){
-  if(caseEnded)return;
-  const d=CONFIG.deterioration;
-  // Basale verslechtering zolang de oorzaak niet volledig behandeld is.
-  let spo2Drift=-0.18*d, rrDrift=0.16*d, hrDrift=0.14*d, sbpDrift=-0.12*d, dbpDrift=-0.07*d;
-  // Zuurstof dempt respiratoire verslechtering.
-  if(v.oxygen){spo2Drift+=0.13*d;rrDrift-=0.07*d;hrDrift-=0.04*d}
-  // Positionering geeft kleine respiratoire winst.
-  if(v.positioned){rrDrift-=0.03*d;spo2Drift+=0.025*d}
-  // Vocht dempt circulatoire achteruitgang.
-  if(v.fluids>=250){sbpDrift+=0.08*d;dbpDrift+=0.04*d;hrDrift-=0.025*d}
-
-  v.spo2 += spo2Drift*dtMin;
-  v.rr += rrDrift*dtMin;
-  v.hr += hrDrift*dtMin;
-  v.sbp += sbpDrift*dtMin;
-  v.dbp += dbpDrift*dtMin;
-
-  // Interventies werken geleidelijk naar een doelwaarde toe.
-  const rate=Math.min(.28,dtMin*.9);
-  for(const k of ["spo2","rr","hr","sbp","dbp"]){
-    if(treatmentTargets[k]!=null){
-      v[k]=lerp(v[k],treatmentTargets[k],rate);
-      if(Math.abs(v[k]-treatmentTargets[k])<.25)treatmentTargets[k]=null;
-    }
-  }
-
-  // Binnen fysiologisch ingestelde grenzen houden.
-  for(const k of ["hr","rr","spo2","sbp","dbp"]){
-    const [lo,hi]=CONFIG.limits[k];v[k]=clamp(v[k],lo,hi);
-  }
-  v.temp=clamp(v.temp,CONFIG.limits.temp[0],CONFIG.limits.temp[1]);
-}
-
-function frame(now){
-  const realDt=(now-lastTick)/1000;lastTick=now;
-  if(running&&!caseEnded){
-    const simDtSec=realDt*CONFIG.simulationSpeed;
-    simSeconds+=simDtSec;
-    physiologyTick(simDtSec/60);
-    updateMonitor();
-    syncClassroom();
-    if(simSeconds>=CONFIG.durationMin*60){addEvent("Maximale casusduur bereikt","bad");caseEnded=true;running=false;renderDebrief()}
-  }
-  drawECG(now/1000);
-  drawResp(now/1000);
-  requestAnimationFrame(frame);
-}
+function hasAny(text,terms){return terms.some(term=>text.includes(term))}
 
 function calcNews(x){
  let s=0;
- const rr=Math.round(x.rr),sp=Math.round(x.spo2),bp=Math.round(x.sbp),hr=Math.round(x.hr),t=x.temp;
- s+=rr<=8?3:rr<=11?1:rr<=20?0:rr<=24?2:3;
- s+=sp<=91?3:sp<=93?2:sp<=95?1:0;
- s+=bp<=90?3:bp<=100?2:bp<=110?1:bp<=219?0:3;
- s+=hr<=40?3:hr<=50?1:hr<=90?0:hr<=110?1:hr<=130?2:3;
- s+=t<=35?3:t<=36?1:t<=38?0:t<=39?1:2;
+ s+=x.rr<=8?3:x.rr<=11?1:x.rr<=20?0:x.rr<=24?2:3;
+ s+=x.spo2<=91?3:x.spo2<=93?2:x.spo2<=95?1:0;
+ s+=x.sbp<=90?3:x.sbp<=100?2:x.sbp<=110?1:x.sbp<=219?0:3;
+ s+=x.hr<=40?3:x.hr<=50?1:x.hr<=90?0:x.hr<=110?1:x.hr<=130?2:3;
+ s+=x.temp<=35?3:x.temp<=36?1:x.temp<=38?0:x.temp<=39?1:2;
  if(x.oxygen)s+=2;
  return s;
 }
-function classify(id,val){
- if(id==="m_spo2") return val<92?"danger":val<95?"warn":"ok";
- if(id==="m_rr") return val>24||val<9?"danger":val>20?"warn":"ok";
- if(id==="m_hr") return val>120||val<50?"danger":val>100?"warn":"ok";
- if(id==="m_bp") return val<90?"danger":val<100?"warn":"ok";
- if(id==="m_temp") return val>39||val<35?"danger":val>38?"warn":"ok";
+function cls(type,val){
+ if(type==="spo2") return val<92?"danger":val<95?"warn":"ok";
+ if(type==="rr") return val>24?"danger":val>20?"warn":"ok";
+ if(type==="hr") return val>120?"danger":val>100?"warn":"ok";
+ if(type==="bp") return val<90?"danger":val<100?"warn":"ok";
+ if(type==="temp") return val>39?"danger":val>38?"warn":"ok";
  return "";
 }
-function setClass(id,val){const el=document.getElementById(id);if(el)el.className="monVal "+classify(id,val)}
-function updateMonitor(){
- document.getElementById("hr").textContent=Math.round(v.hr);
- document.getElementById("rr").textContent=Math.round(v.rr);
- document.getElementById("spo2").textContent=Math.round(v.spo2);
- document.getElementById("sbp").textContent=Math.round(v.sbp);
- document.getElementById("dbp").textContent=Math.round(v.dbp);
- document.getElementById("temp").textContent=v.temp.toFixed(1);
- document.getElementById("o2").textContent=o2Label();
- document.getElementById("news").textContent=calcNews(v);
- const mm=Math.floor(simSeconds/60),ss=Math.floor(simSeconds%60);
- document.getElementById("clock").textContent=`${String(mm).padStart(2,"0")}:${String(ss).padStart(2,"0")}`;
- setClass("m_hr",v.hr);setClass("m_rr",v.rr);setClass("m_spo2",v.spo2);setClass("m_bp",v.sbp);setClass("m_temp",v.temp);
- document.getElementById("m_o2").className="monVal "+(v.oxygen?"ok":"");
- const n=calcNews(v);document.getElementById("statusText").textContent=n>=7?"hoog risico":n>=5?"zorgwekkend":n>=1?"instabiel":"stabiel";
+function applyClass(id,type,val){
+ const e=document.getElementById(id);e.className="v "+cls(type,val);
 }
+function flash(id){const e=document.getElementById(id);e.classList.remove("flash");void e.offsetWidth;e.classList.add("flash")}
+function update(changed=[]){
+ normalizeVitals();
+ hr.textContent=Math.round(v.hr); rr.textContent=Math.round(v.rr); spo2.textContent=Math.round(v.spo2);
+ sbp.textContent=Math.round(v.sbp);dbp.textContent=Math.round(v.dbp);temp.textContent=v.temp.toFixed(1);o2.textContent=v.oxygen?"AAN":"UIT";
+ news.textContent=calcNews(v);
+ applyClass("vh","hr",v.hr);applyClass("vs","spo2",v.spo2);applyClass("vr","rr",v.rr);applyClass("vb","bp",v.sbp);applyClass("vt","temp",v.temp);
+ document.getElementById("vo").className="v "+(v.oxygen?"ok":"");
+ const n=calcNews(v), st=document.getElementById("patientStatus");
+ st.textContent=n>=7?"instabiel":n>=5?"zorgwekkend":"verbeterend";st.className="status "+(n>=7?"":n>=5?"mid":"good");
+ changed.forEach(flash);
+}
+function log(msg){
+ document.getElementById("log").innerHTML=`<div class="logline"><b>${clock.textContent}</b> • ${msg}</div>`+document.getElementById("log").innerHTML;
+}
+function fb(text,type="goodfb"){feedback.innerHTML=`<div class="notice ${type}">${text}</div>`}
+function showDiagnosticResult(id,title,content){
+ const area=document.getElementById("diagnosticResults");
+ let card=document.getElementById(id);
+ if(!card){card=document.createElement("section");card.id=id;card.className="resultCard";area.appendChild(card)}
+ card.innerHTML=`<h2>${title}</h2>${content}`;
+}
+function showTab(id,el){
+ document.querySelectorAll(".panel").forEach(x=>x.style.display="none");
+ document.getElementById(id).style.display="block";
+ document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));el.classList.add("active");
+}
+function limitDD(changed){
+ const checked=[...document.querySelectorAll('input[name="dd"]:checked')];
+ if(checked.length>3){
+   changed.checked=false;
+   fb("Kies maximaal drie differentiaaldiagnoses.","warnfb");
+ }
+}
+function submitDD(){
+ if(ddSubmitted)return;
+ const checked=[...document.querySelectorAll('input[name="dd"]:checked')];
+ if(checked.length===0){fb("Kies eerst minimaal één differentiaaldiagnose.","warnfb");return;}
+ selectedDD=checked.map(x=>x.value);
+ const labels=checked.map(x=>x.closest("label").innerText.trim());
+ let pts=0;
+ if(selectedDD.includes("pneumonie-sepsis"))pts+=3;
+ if(selectedDD.includes("longembolie"))pts+=1;
+ if(selectedDD.includes("hartfalen"))pts+=1;
+ const feedbackPerDiagnose={
+   "pneumonie-sepsis":"<b>Pneumonie met sepsis:</b> meest waarschijnlijk. Koorts, hypoxemie, tachypneu, verminderd ademgeruis rechts basaal, hypotensie en tachycardie passen hierbij.",
+   "longembolie":"<b>Longembolie:</b> een verdedigbare differentiaaldiagnose bij acute dyspneu, hypoxemie en tachycardie. De hoge koorts en het focale ademgeruis maken pneumonie met sepsis waarschijnlijker.",
+   "hartfalen":"<b>Acuut gedecompenseerd hartfalen:</b> mogelijk bij dyspneu en hypoxemie, maar koorts en eenzijdig verminderd ademgeruis ondersteunen in deze casus eerder een infectieuze oorzaak.",
+   "acs":"<b>Acuut coronair syndroom:</b> minder waarschijnlijk. Er is geen pijn op de borst en het ECG toont geen acute ST-elevatie, al kan een ACS atypisch verlopen.",
+   "copd":"<b>COPD-exacerbatie:</b> minder waarschijnlijk zonder bekende COPD-anamnese. De koorts, hypotensie en focale longbevinding wijzen sterker op pneumonie met sepsis."
+ };
+ const feedbackLines=selectedDD.map(x=>`<li>${feedbackPerDiagnose[x]}</li>`);
+ if(!selectedDD.includes("pneumonie-sepsis"))feedbackLines.push("<li><b>Belangrijk gemist:</b> pneumonie met sepsis past het beste bij het totale klinische beeld.</li>");
+ ddFeedbackHtml=`<ul style="margin:8px 0 0;padding-left:20px">${feedbackLines.join("")}</ul>`;
+ ddPoints=pts;score+=pts;ddSubmitted=true;
+ document.getElementById("submitDD").disabled=true;
+ document.querySelectorAll('input[name="dd"]').forEach(x=>x.disabled=true);
+ fb(`<b>Feedback differentiaaldiagnose — ${pts}/5 punten</b>${ddFeedbackHtml}`,pts>=3?"goodfb":"warnfb");
+ log(`Differentiaaldiagnose: ${labels.join(", ")} (${pts}/5 punten).`);
+ postClassEvent("dd","dd",{selected:selectedDD,points:pts});
+}
+function gradual(targets,steps=5,delay=700,label="interventie"){
+ let i=0;
+ const start={...v};
+ const timer=setInterval(()=>{
+   i++;
+   Object.keys(targets).forEach(k=>{v[k]=start[k]+(targets[k]-start[k])*(i/steps)});
+   normalizeVitals();
+   update(Object.keys(targets).map(k=>k==="hr"?"vh":k==="spo2"?"vs":k==="rr"?"vr":k==="sbp"||k==="dbp"?"vb":""));
+   trend.textContent=label;
+   if(i>=steps){clearInterval(timer)}
+ },delay);
+}
+function act(a,btn){
+ if(finished)return;
+ if(a==="fluids" && !used.has("iv")){
+   critical.push("Vocht gekozen vóór IV-toegang");
+   fb("Je kiest vocht, maar er is nog geen IV-toegang geregistreerd. Regel eerst een veilige toedieningsweg.","warnfb");
+   log("Vocht nog niet uitvoerbaar: IV-toegang ontbreekt.");
+   return;
+ }
+ if(a==="reassessB" && t-(actionTimes.oxygen??t)<4){
+   fb("Geef de zuurstof kort de tijd om effect te hebben en herbeoordeel B daarna opnieuw.","warnfb");return;
+ }
+ if(a==="reassessC" && t-(actionTimes.fluids??t)<5){
+   fb("Geef de vochtinterventie kort de tijd om effect te hebben en herbeoordeel C daarna opnieuw.","warnfb");return;
+ }
+ if(a!=="wait" && used.has(a))return;
+ if(a!=="wait")used.add(a);
+ if(a!=="wait")actionTimes[a]=t;
+ recordAssessment(a);
+ if(btn && a!=="wait")btn.disabled=true;
+ postClassEvent("action",a,{label:actionLabels[a]||a,time:t});
 
-function addEvent(text,tone="info",extra={}){
- const ev={t:simSeconds,text,tone,...extra};timeline.push(ev);
- renderTimeline();
- syncClassroom();
-}
-function renderTimeline(){
- const el=document.getElementById("timeline");if(!el)return;
- el.innerHTML=timeline.slice().reverse().map(e=>{
-   const mm=Math.floor(e.t/60),ss=Math.floor(e.t%60);
-   return `<div class="event ${e.tone}"><b>${String(mm).padStart(2,"0")}:${String(ss).padStart(2,"0")}</b> • ${e.text}</div>`
- }).join("");
-}
+ if(a==="airway"){score+=2;fb("<b>A:</b> patiënt spreekt in volledige zinnen. De luchtweg is op dit moment vrij. Vervolg systematisch met Breathing.");log("Airway beoordeeld: vrij.")}
+ if(a==="breathing"){score+=2;fb("<b>B:</b> AF 30/min, SpO₂ 87%, oppervlakkige ademhaling; rechts basaal verminderd ademgeruis. Dit vraagt om snelle interventie en herbeoordeling.");log("Breathing beoordeeld: ernstige afwijkingen.")}
+ if(a==="circulation"){score+=2;fb("<b>C:</b> HF 118/min, RR 92/58 mmHg, patiënt klam. De circulatie is afwijkend.");log("Circulation beoordeeld: tachycardie en hypotensie.")}
+ if(a==="disability"){score+=1;fb("<b>D:</b> wakker en adequaat aanspreekbaar, geen nieuwe verwardheid. Controleer behandelbare oorzaken indien relevant.");log("Disability beoordeeld.")}
+ if(a==="exposure"){score+=1;fb("<b>E:</b> temperatuur 38,9 °C. Koorts ondersteunt een mogelijke infectieuze oorzaak.");log("Exposure uitgevoerd: koorts vastgesteld.")}
+ if(a==="caprefill"){score+=1;fb("<b>C – capillaire refill gecontroleerd:</b> 4 seconden. Dit ondersteunt een verminderde perifere perfusie.","warnfb");log("C-handeling: capillaire refill 4 seconden.")}
 
-function renderSBAR(){
- running=true;
- document.getElementById("bar").style.width="100%";
- const app=document.getElementById("app");
- app.innerHTML=`<div class="row"><span class="tag">ABCDE voltooid</span><span class="tag">SBAR</span></div>
- <h1>Escaleren via SBAR</h1>
- <p>Welke informatie geef je door? Vul kort de vier onderdelen in.</p>
- <label><b>S – Situation</b><textarea id="S" style="width:100%;min-height:58px"></textarea></label>
- <label><b>B – Background</b><textarea id="B" style="width:100%;min-height:58px"></textarea></label>
- <label><b>A – Assessment</b><textarea id="A" style="width:100%;min-height:58px"></textarea></label>
- <label><b>R – Recommendation</b><textarea id="R" style="width:100%;min-height:58px"></textarea></label>
- <div class="row"><button class="primary" onclick="submitSBAR()">Casus beëindigen & debriefing</button><button class="secondary" onclick="doIntervention('reassess')">🔁 Eerst herbeoordelen</button></div>`;
+ if(a==="oxygen"){
+   score+=3;v.oxygen=true;update(["vo"]);fb("<b>Zuurstof gestart.</b> De monitor reageert geleidelijk. Kijk niet alleen naar de SpO₂: herbeoordeel ook AF, HF en klinische toestand.");
+   log("Zuurstof gestart; herbeoordeling B vereist.");setReassessment("B");gradual({spo2:94,rr:25,hr:110},6,650,"respons op O₂");
+ }
+ if(a==="situp"){score+=1;fb("Patiënt rechterop gepositioneerd. De ademarbeid neemt iets af.");log("Patiënt rechterop.");gradual({rr:Math.max(24,v.rr-2),spo2:Math.min(95,v.spo2+1)},4,600,"houding aangepast")}
+ if(a==="iv"){score+=1;fb("IV-toegang voorbereid. Dit verandert de monitor niet direct, maar maakt behandeling en diagnostiek mogelijk.");log("IV-toegang verkregen.")}
+ if(a==="fluids"){
+   score+=2;fb("Vocht gestart in deze oefencasus. Herbeoordeel C nadat de interventie effect heeft kunnen hebben.");log("Vocht gestart; herbeoordeling C vereist.");setReassessment("C");gradual({sbp:104,dbp:64,hr:104},6,700,"respons op vocht")
+ }
+ if(a==="wait"){
+   score-=2;critical.push("Afgewacht bij instabiele patiënt");fb("Twee minuten niets doen bij deze instabiele patiënt geeft klinische verslechtering.","badfb");log("2 minuten zonder adequate interventie.");
+   gradual({spo2:Math.max(80,v.spo2-3),rr:Math.min(38,v.rr+3),hr:Math.min(138,v.hr+7),sbp:Math.max(78,v.sbp-7),dbp:Math.max(45,v.dbp-5)},5,550,"verslechtering");
+ }
+ if(a==="ecg"){score+=1;fb("ECG aangevraagd. Resultaat volgt na enkele seconden.");log("ECG aangevraagd.");setTimeout(()=>{fb("<b>ECG:</b> sinustachycardie, geen acute ST-elevatie in deze oefencasus.","goodfb");log("ECG-resultaat beschikbaar.")},2600)}
+ if(a==="glucose"){score+=1;fb("<b>D – glucose gecontroleerd:</b> 6,4 mmol/L (normaal ongeveer 4,0–8,0 mmol/L). Dit is een onderzoekshandeling; behandeling is niet nodig omdat er geen hypo- of hyperglykemie is.");log("D-onderzoekshandeling: glucose gecontroleerd, 6,4 mmol/L.")}
+ if(a==="reassessB"){
+   pendingReassess.delete("B");completedReassess.add("B");
+   fb(`<b>B herbeoordeeld:</b> AF ${Math.round(v.rr)}/min, SpO₂ ${Math.round(v.spo2)}%, minder ademarbeid. Er is verbetering, maar de patiënt blijft respiratoir afwijkend; monitoring en escalatie blijven nodig.`,"goodfb");
+   log("B herbeoordeeld na zuurstof.");
+ }
+ if(a==="reassessC"){
+   pendingReassess.delete("C");completedReassess.add("C");
+   fb(`<b>C herbeoordeeld:</b> HF ${Math.round(v.hr)}/min, RR ${Math.round(v.sbp)}/${Math.round(v.dbp)} mmHg. De circulatie reageert, maar blijft zorgwekkend; vervolgbeoordeling en medische behandeling zijn nodig.`,"goodfb");
+   log("C herbeoordeeld na vocht.");
+ }
+ if(a==="bloodgas"){
+   score+=1;fb("Bloedgas aangevraagd. Resultaat volgt.");log("Bloedgas aangevraagd.");
+   setTimeout(()=>{showDiagnosticResult("bloodgasResult","Bloedgasuitslagen",`
+   <div class="labWrap"><table class="labTable">
+   <thead><tr><th>Bepaling</th><th>Uitslag</th><th>Normaalwaarde</th><th>Beoordeling</th></tr></thead><tbody>
+   <tr><td>pH</td><td>7,48</td><td>7,35–7,45</td><td class="high">Verhoogd ↑</td></tr>
+   <tr><td>pCO₂</td><td>4,1 kPa</td><td>4,7–6,0 kPa</td><td class="low">Verlaagd ↓</td></tr>
+   <tr><td>pO₂</td><td>7,2 kPa</td><td>10,0–13,3 kPa</td><td class="low">Verlaagd ↓</td></tr>
+   <tr><td>HCO₃⁻</td><td>23 mmol/L</td><td>22–26 mmol/L</td><td class="normal">Normaal</td></tr>
+   <tr><td>Base excess</td><td>−1 mmol/L</td><td>−2 tot +2 mmol/L</td><td class="normal">Normaal</td></tr>
+   <tr><td>SaO₂</td><td>87%</td><td>95–100%</td><td class="low">Verlaagd ↓</td></tr>
+   <tr><td>Lactaat</td><td>3,4 mmol/L</td><td>0,5–2,2 mmol/L</td><td class="high">Verhoogd ↑</td></tr>
+   </tbody></table></div>
+   <p><b>Interpretatie:</b> hypoxemie met een acute respiratoire alkalose, passend bij tachypneu. Het verhoogde lactaat ondersteunt verminderde weefselperfusie.</p>
+   <p class="muted small">Referentiewaarden zijn didactische volwassenwaarden en kunnen per laboratorium enigszins verschillen.</p>`);fb("De bloedgasuitslagen zijn beschikbaar en blijven onderaan zichtbaar.","warnfb");log("Bloedgasresultaten beschikbaar: hypoxemie en respiratoire alkalose.")},3200)
+ }
+ if(a==="lab"){
+   score+=1;fb("Laboratorium aangevraagd: volledig bloedbeeld, nierfunctie, elektrolyten en infectieparameters. Resultaten volgen.");log("Laboratorium aangevraagd.");
+   setTimeout(()=>{showDiagnosticResult("labResult","Laboratoriumuitslagen",`
+   <div class="labWrap"><table class="labTable">
+   <thead><tr><th>Bepaling</th><th>Uitslag</th><th>Normaalwaarde</th><th>Beoordeling</th></tr></thead><tbody>
+   <tr class="group"><td colspan="4">Volledig bloedbeeld</td></tr>
+   <tr><td>Hemoglobine (Hb)</td><td>7,8 mmol/L</td><td>7,5–10,0 mmol/L</td><td class="normal">Normaal</td></tr>
+   <tr><td>Hematocriet (Ht)</td><td>0,38 L/L</td><td>0,36–0,47 L/L</td><td class="normal">Normaal</td></tr>
+   <tr><td>Erytrocyten</td><td>4,2 ×10¹²/L</td><td>4,0–5,2 ×10¹²/L</td><td class="normal">Normaal</td></tr>
+   <tr><td>MCV</td><td>90 fL</td><td>80–100 fL</td><td class="normal">Normaal</td></tr>
+   <tr><td>Leukocyten</td><td>17,8 ×10⁹/L</td><td>4,0–10,0 ×10⁹/L</td><td class="high">Verhoogd ↑</td></tr>
+   <tr><td>Neutrofielen</td><td>15,2 ×10⁹/L</td><td>1,5–7,5 ×10⁹/L</td><td class="high">Verhoogd ↑</td></tr>
+   <tr><td>Trombocyten</td><td>210 ×10⁹/L</td><td>150–400 ×10⁹/L</td><td class="normal">Normaal</td></tr>
+   <tr class="group"><td colspan="4">Nierfunctie en elektrolyten</td></tr>
+   <tr><td>Natrium</td><td>133 mmol/L</td><td>135–145 mmol/L</td><td class="low">Verlaagd ↓</td></tr>
+   <tr><td>Kalium</td><td>4,2 mmol/L</td><td>3,5–5,0 mmol/L</td><td class="normal">Normaal</td></tr>
+   <tr><td>Ureum</td><td>9,1 mmol/L</td><td>2,5–7,5 mmol/L</td><td class="high">Verhoogd ↑</td></tr>
+   <tr><td>Creatinine</td><td>112 µmol/L</td><td>45–90 µmol/L</td><td class="high">Verhoogd ↑</td></tr>
+   <tr><td>eGFR</td><td>43 mL/min/1,73 m²</td><td>&gt;90 mL/min/1,73 m²</td><td class="low">Verlaagd ↓</td></tr>
+   <tr class="group"><td colspan="4">Infectie en weefselperfusie</td></tr>
+   <tr><td>CRP</td><td>186 mg/L</td><td>&lt;5 mg/L</td><td class="high">Sterk verhoogd ↑</td></tr>
+   <tr><td>Lactaat</td><td>3,4 mmol/L</td><td>0,5–2,2 mmol/L</td><td class="high">Verhoogd ↑</td></tr>
+   </tbody></table></div>
+   <p style="margin:8px 0 0"><b>Interpretatie:</b> leukocytose met neutrofilie en een sterk verhoogd CRP ondersteunen een bacteriële infectie. Het verhoogde lactaat, de verminderde nierfunctie en de hypotensie passen bij orgaandisfunctie en verminderde perfusie bij een mogelijke sepsis.</p>
+   <p class="muted small">Referentiewaarden zijn didactische volwassenwaarden en kunnen per laboratorium enigszins verschillen.</p>`);fb("De laboratoriumuitslagen zijn beschikbaar en blijven onderaan zichtbaar.","warnfb");log("Uitgebreide labresultaten beschikbaar: infectieparameters en nierfunctie afwijkend.")},3600)
+ }
+ if(a==="help"){score+=3;fb("<b>Extra hulp vroeg ingeschakeld.</b> Dit is passend bij de combinatie van respiratoire en circulatoire afwijkingen.");log("Extra hulp / arts gealarmeerd.")}
+ if(a==="sbar"){
+   document.getElementById("communicatie").innerHTML=`<h2>SBAR-overdracht</h2>
+   <p class="muted small">De beoordeling kijkt naar klinisch relevante inhoud, niet naar de lengte van je tekst.</p>
+   <label><b>S – Situation</b><textarea id="S" class="readonly" readonly>Ik bel over mevrouw De Vries, 67 jaar. Zij is ernstig benauwd en op dit moment instabiel.</textarea></label>
+   <label><b>B – Background</b><textarea id="B" placeholder="Benoem relevante patiëntgegevens en bevindingen uit de voorgeschiedenis van deze casus."></textarea></label>
+   <label><b>A – Assessment</b><textarea id="A" placeholder="Vat de belangrijkste ABCDE-bevindingen, vitale waarden, NEWS2 en respons op interventies samen."></textarea></label>
+   <label><b>R – Recommendation</b><textarea id="R" placeholder="Formuleer wat je nu concreet van de arts of het acute team vraagt."></textarea></label>
+   <button class="btn primary" onclick="submitSBAR()">SBAR beoordelen</button>`;
+ }
 }
-
 function submitSBAR(){
- const vals=["S","B","A","R"].map(id=>document.getElementById(id).value.trim());
- const completed=vals.filter(x=>x.length>=8).length;
- scores.communicate=Math.min(2,scores.communicate+completed*.25);
- addEvent(`SBAR afgerond (${completed}/4 onderdelen inhoudelijk ingevuld)`,completed===4?"good":"bad");
- caseEnded=true;running=false;syncClassroom(true);renderDebrief();
-}
+ if(sbarSubmitted)return;
+ const b=document.getElementById("B").value.trim().toLowerCase();
+ const a=document.getElementById("A").value.trim().toLowerCase();
+ const r=document.getElementById("R").value.trim().toLowerCase();
 
-function renderDebrief(){
- const app=document.getElementById("app");
- const total=Object.values(scores).reduce((a,b)=>a+b,0);
- const pct=Math.round(total/10*100);
- const cards=[
-  ["Herkennen",scores.recognize],["Prioriteren",scores.prioritize],["Handelen",scores.act],
-  ["Evalueren",scores.reassess],["Communiceren",scores.communicate]
+ const bSignals=[
+   hasAny(b,["67","mevrouw de vries","patiënt"]),
+   hasAny(b,["koorts","38,9","38.9","benauwd","dyspneu","infect"])
+ ].filter(Boolean).length;
+ const bPts=bSignals===2?3:bSignals===1?1:0;
+
+ const aSignals=[
+   hasAny(a,["spo2","saturatie","87","94"]),
+   hasAny(a,["ademfrequentie","af ","tachypneu","30","25"]),
+   hasAny(a,["bloeddruk","rr ","92/58","hypotens"]),
+   hasAny(a,["hartfrequentie","hf ","118","tachycard"]),
+   hasAny(a,["news","abcde","zuurstof","o2","respons","herbeoord"])
+ ].filter(Boolean).length;
+ const aPts=Math.min(5,aSignals);
+
+ const requestPresent=hasAny(r,["komen","beoordelen","overname","arts","acute team","behandeling","beleid"]);
+ const urgencyPresent=hasAny(r,["nu","direct","met spoed","spoedig","urgent","sepsis"]);
+ const rPts=requestPresent&&urgencyPresent?4:requestPresent||urgencyPresent?2:0;
+
+ sbarPoints=3+bPts+aPts+rPts;sbarSubmitted=true;
+ document.querySelectorAll("#communicatie textarea").forEach(x=>x.disabled=true);
+ document.querySelector("#communicatie .btn").disabled=true;
+ const feedbackLines=[
+   `<li><b>S – 3/3:</b> de situatie en urgentie zijn vooraf duidelijk geformuleerd.</li>`,
+   `<li><b>B – ${bPts}/3:</b> ${bPts===3?"relevante patiënt- en casusgegevens zijn benoemd.":"benoem leeftijd/patiënt én relevante achtergrond of actuele klachten."}</li>`,
+   `<li><b>A – ${aPts}/5:</b> ${aPts>=4?"de belangrijkste objectieve bevindingen en respons zijn goed samengevat.":"voeg meer concrete ABCDE-waarden, NEWS2 en respons op interventies toe."}</li>`,
+   `<li><b>R – ${rPts}/4:</b> ${rPts===4?"de hulpvraag is concreet én urgent.":"zeg concreet wie je wanneer nodig hebt en wat je verwacht."}</li>`
  ];
- const feedback=[];
- if(!v.oxygen) feedback.push("Hypoxemie bleef zonder zuurstofinterventie.");
- if(scores.reassess<1) feedback.push("Na interventies is weinig of niet expliciet herbeoordeeld.");
- if(!v.help) feedback.push("Er is geen extra hulp/arts ingeschakeld.");
- if(!findings.has("spo2")||!findings.has("rr")) feedback.push("Breathing is niet volledig objectief beoordeeld.");
- if(scores.act>=1.5&&scores.reassess>=1) feedback.push("Interventies zijn gevolgd door herbeoordeling: sterk klinisch-redeneerpatroon.");
-
- app.innerHTML=`<div class="row"><span class="tag">Debriefing</span><span class="tag">${formatTime(simSeconds)}</span></div>
- <h1>Casus afgerond – ${pct}%</h1>
- <div class="scoregrid">${cards.map(([n,s])=>`<div class="scorecard">${n}<b>${Math.round(s*10)/10}/2</b></div>`).join("")}</div>
- <div class="sectionbox"><b>Toestand bij afronding</b><p>HF ${Math.round(v.hr)}, AF ${Math.round(v.rr)}, SpO₂ ${Math.round(v.spo2)}%, RR ${Math.round(v.sbp)}/${Math.round(v.dbp)} mmHg, O₂: ${o2Label()}.</p></div>
- <div class="sectionbox"><b>Gerichte feedback</b>${feedback.length?`<ul>${feedback.map(x=>`<li>${x}</li>`).join("")}</ul>`:"<p>De belangrijkste beoordelings- en behandelstappen zijn uitgevoerd.</p>"}</div>
- <h3>Tijdlijn van handelen</h3>
- <div class="timeline" style="max-height:none">${timeline.map(e=>`<div class="event ${e.tone}"><b>${formatTime(e.t)}</b> • ${e.text}</div>`).join("")}</div>
- <div class="row" style="margin-top:12px"><button class="primary" onclick="resetState()">Opnieuw spelen</button><button class="secondary" onclick="toggleSettings()">⚙ Casus aanpassen</button></div>`;
+ fb(`<b>Inhoudelijke SBAR-beoordeling — ${sbarPoints}/15 punten</b><ul style="margin:8px 0 0;padding-left:20px">${feedbackLines.join("")}</ul>`,sbarPoints>=11?"goodfb":"warnfb");
+ log(`SBAR inhoudelijk beoordeeld: ${sbarPoints}/15.`);
+ postClassEvent("sbar","sbar",{points:sbarPoints});
 }
-function formatTime(s){const m=Math.floor(s/60),ss=Math.floor(s%60);return `${String(m).padStart(2,"0")}:${String(ss).padStart(2,"0")}`}
+function calculateDomains(){
+ const completedABCDE=expectedABCDE.filter(x=>used.has(x)).length;
+ const correctPositions=expectedABCDE.filter((x,i)=>abcdeOrder[i]===x).length;
+ const assessment=Math.min(25,completedABCDE*3+Math.round(correctPositions/5*8)+(used.has("caprefill")?2:0));
 
-// ECG: simpele dynamische sinus-tachycardie, gekoppeld aan actuele HF.
-function drawECG(t){
- const c=document.getElementById("ecg");if(!c||!v)return;
- const rect=c.getBoundingClientRect(),dpr=window.devicePixelRatio||1;
- if(c.width!==Math.floor(rect.width*dpr)||c.height!==Math.floor(rect.height*dpr)){c.width=Math.floor(rect.width*dpr);c.height=Math.floor(rect.height*dpr)}
- const ctx=c.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);
- const w=rect.width,h=rect.height;ctx.clearRect(0,0,w,h);
- ctx.strokeStyle="#143a2b";ctx.lineWidth=1;
- for(let x=0;x<w;x+=20){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}
- for(let y=0;y<h;y+=20){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}
- const hr=Math.max(40,Math.min(180,v.hr)),period=60/hr;
- ctx.strokeStyle="#67ff9c";ctx.lineWidth=1.8;ctx.beginPath();
- for(let x=0;x<w;x++){
-   const time=t-(w-x)/95;
-   let ph=((time%period)+period)%period/period;
-   let y=0;
-   // P, Q, R, S, T als som van gaussische pulsen
-   const g=(mu,sig,amp)=>amp*Math.exp(-((ph-mu)**2)/(2*sig*sig));
-   y+=g(.14,.025,3)+g(.29,.012,-5)+g(.315,.008,22)+g(.34,.012,-9)+g(.58,.055,6);
-   const py=h*.55-y;
-   if(x===0)ctx.moveTo(x,py);else ctx.lineTo(x,py);
+ let safety=0;
+ if(used.has("oxygen"))safety+=actionTimes.breathing<=actionTimes.oxygen?8:3;
+ if(used.has("help"))safety+=actionTimes.help<=90?7:4;
+ if(used.has("iv")&&used.has("fluids")&&actionTimes.iv<actionTimes.fluids)safety+=5;
+ if(used.has("situp"))safety+=3;
+ if(used.has("glucose"))safety+=2;
+
+ const reassessment=(completedReassess.has("B")?10:0)+(completedReassess.has("C")?10:0);
+ const diagnostics=["ecg","bloodgas","lab"].filter(x=>used.has(x)).length;
+ const reasoning=Math.min(15,Math.round(ddPoints/5*10)+Math.round(diagnostics/3*5));
+ const communication=Math.min(15,sbarPoints);
+ const penalty=used.has("wait")?5:0;
+ const total=Math.max(0,Math.min(100,assessment+safety+reassessment+reasoning+communication-penalty));
+ return {assessment,safety,reassessment,reasoning,communication,penalty,total};
+}
+function finish(){
+ finished=true;clearInterval(interval);
+ if(!ddSubmitted)critical.push("Geen differentiaaldiagnose gekozen");
+ if(!sbarSubmitted)critical.push("SBAR niet inhoudelijk afgerond");
+ if(used.has("oxygen")&&!completedReassess.has("B"))critical.push("B niet herbeoordeeld na zuurstof");
+ if(used.has("fluids")&&!completedReassess.has("C"))critical.push("C niet herbeoordeeld na vocht");
+ if(abcdeOrder.join(",")!==expectedABCDE.join(","))critical.push("ABCDE niet volledig in de juiste volgorde uitgevoerd");
+ const domains=calculateDomains(),base=domains.total;
+ postClassEvent("finish","finish",{score:base,domains,critical});
+ let msg=base>=80?"Sterk klinisch handelen":base>=60?"Goede basis, nog aanscherpen":"Nog oefenen op prioritering en tijdig handelen";
+ document.querySelector(".layout").innerHTML=`<section class="card" style="grid-column:1/-1"><div class="pad">
+ <h1>Debriefing</h1><div class="result">${base}%</div><p style="text-align:center"><b>${msg}</b></p>
+ <div class="scoreGrid">
+   <div class="scoreRow"><span><b>Systematische ABCDE-beoordeling</b><br><span class="muted">volledigheid en juiste volgorde</span></span><b>${domains.assessment}/25</b></div>
+   <div class="scoreRow"><span><b>Urgentie en patiëntveiligheid</b><br><span class="muted">tijdig handelen en veilige uitvoerbaarheid</span></span><b>${domains.safety}/25</b></div>
+   <div class="scoreRow"><span><b>Interventie en herbeoordeling</b><br><span class="muted">effect van zuurstof en vocht controleren</span></span><b>${domains.reassessment}/20</b></div>
+   <div class="scoreRow"><span><b>Klinisch redeneren</b><br><span class="muted">differentiaaldiagnose en passende diagnostiek</span></span><b>${domains.reasoning}/15</b></div>
+   <div class="scoreRow"><span><b>Communicatie</b><br><span class="muted">inhoudelijke SBAR</span></span><b>${domains.communication}/15</b></div>
+ </div>
+ ${domains.penalty?'<div class="notice badfb"><b>Veiligheidscorrectie:</b> −'+domains.penalty+' punten wegens afwachten bij een instabiele patiënt.</div>':""}
+ <div class="notice goodfb"><b>Eindstatus:</b> HF ${Math.round(v.hr)}, AF ${Math.round(v.rr)}, SpO₂ ${Math.round(v.spo2)}%, RR ${Math.round(v.sbp)}/${Math.round(v.dbp)}, O₂ ${v.oxygen?"aan":"uit"}.</div>
+ <div class="notice goodfb"><b>Differentiaaldiagnose:</b> ${selectedDD.length?selectedDD.map(x=>({"pneumonie-sepsis":"Pneumonie met sepsis","longembolie":"Longembolie","hartfalen":"Acuut gedecompenseerd hartfalen","acs":"Acuut coronair syndroom","copd":"COPD-exacerbatie"}[x])).join(", "):"Niet ingevuld"}.</div>
+ ${ddSubmitted?'<div class="notice '+(selectedDD.includes("pneumonie-sepsis")?"goodfb":"warnfb")+'"><b>Feedback op de gekozen diagnoses:</b>'+ddFeedbackHtml+'</div>':""}
+ <div class="notice ${critical.length?"warnfb":"goodfb"}"><b>Kritieke aandachtspunten:</b><br>${critical.length?critical.join("<br>"):"Geen kritieke missers geregistreerd."}</div>
+ <p class="muted">De score is formatief en beloont de gevolgde werkwijze. Alleen veel handelingen aanklikken levert geen hoge score op.</p>
+ <button class="btn primary" onclick="location.reload()">Opnieuw spelen</button>
+ </div></section>`;
+}
+function restart(){location.reload()}
+
+
+// ---- Realistische bedside-monitor tracings ----
+const ecgCanvas = document.getElementById("ecgCanvas");
+const plethCanvas = document.getElementById("plethCanvas");
+const ecgCtx = ecgCanvas.getContext("2d");
+const plethCtx = plethCanvas.getContext("2d");
+
+let ecgPhase = 0;
+let plethPhase = 0;
+let lastFrame = performance.now();
+
+function resizeMonitorCanvases(){
+  [ecgCanvas, plethCanvas].forEach(c=>{
+    const rect = c.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    c.width = Math.max(1, Math.round(rect.width*dpr));
+    c.height = Math.max(1, Math.round(rect.height*dpr));
+    c.getContext("2d").setTransform(dpr,0,0,dpr,0,0);
+  });
+}
+window.addEventListener("resize", resizeMonitorCanvases);
+resizeMonitorCanvases();
+
+function gaussian(x,mu,sigma,amp){
+  const z=(x-mu)/sigma;
+  return amp*Math.exp(-0.5*z*z);
+}
+
+function ecgBeat(phase){
+  // Stylized lead-II morphology: P, Q, R, S, T.
+  // phase is 0..1 across one cardiac cycle.
+  let y = 0;
+  y += gaussian(phase,0.18,0.035, 0.12);  // P
+  y += gaussian(phase,0.365,0.012,-0.12); // Q
+  y += gaussian(phase,0.39,0.010, 1.00);  // R
+  y += gaussian(phase,0.415,0.014,-0.28); // S
+  y += gaussian(phase,0.67,0.075, 0.30);  // T
+  return y;
+}
+
+function plethBeat(phase){
+  // Fast upstroke, slower decay, small dicrotic notch.
+  const up = Math.pow(Math.max(0, Math.sin(Math.PI*Math.min(1, phase*2.15))), 1.6);
+  const decay = Math.exp(-3.3*Math.max(0, phase-0.18));
+  const pulse = phase<0.18 ? up : decay;
+  const notch = gaussian(phase,0.52,0.025,-0.10)+gaussian(phase,0.59,0.04,0.07);
+  return Math.max(0, pulse+notch);
+}
+
+function drawGrid(ctx,w,h){
+  ctx.clearRect(0,0,w,h);
+  ctx.strokeStyle="rgba(50,120,75,.12)";
+  ctx.lineWidth=1;
+  for(let x=0;x<w;x+=20){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke();}
+  for(let y=0;y<h;y+=20){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();}
+}
+
+function drawTraces(now){
+  const dt=Math.min(0.05,(now-lastFrame)/1000);
+  lastFrame=now;
+
+  // phase speed follows live HR
+  ecgPhase = (ecgPhase + dt*(v.hr/60)) % 1;
+  plethPhase = (plethPhase + dt*(v.hr/60)) % 1;
+
+  const ew=ecgCanvas.clientWidth, eh=ecgCanvas.clientHeight;
+  const pw=plethCanvas.clientWidth, ph=plethCanvas.clientHeight;
+
+  drawGrid(ecgCtx,ew,eh);
+  drawGrid(plethCtx,pw,ph);
+
+  // ECG: display ~4.2 seconds across the width
+  ecgCtx.strokeStyle="#55ff91";
+  ecgCtx.lineWidth=1.8;
+  ecgCtx.beginPath();
+  const secondsAcross=4.2;
+  const beatsAcross=(v.hr/60)*secondsAcross;
+  for(let x=0;x<=ew;x++){
+    const local=((x/ew)*beatsAcross + ecgPhase) % 1;
+    const signal=ecgBeat(local);
+    const baselineWander=Math.sin((x/ew)*Math.PI*2 + now/3500)*0.012;
+    const y=eh*0.58 - (signal+baselineWander)*eh*0.36;
+    if(x===0) ecgCtx.moveTo(x,y); else ecgCtx.lineTo(x,y);
+  }
+  ecgCtx.stroke();
+
+  // PLETH amplitude subtly falls with worse perfusion / low SpO2
+  let perfusion = Math.max(0.28, Math.min(1, (v.sbp-55)/70));
+  let satFactor = Math.max(0.45, Math.min(1, (v.spo2-70)/28));
+  const amp=perfusion*satFactor;
+  plethCtx.strokeStyle="#57c8ff";
+  plethCtx.lineWidth=1.7;
+  plethCtx.beginPath();
+  const plethBeats=(v.hr/60)*5.0;
+  for(let x=0;x<=pw;x++){
+    const local=((x/pw)*plethBeats + plethPhase) % 1;
+    const signal=plethBeat(local)*amp;
+    const y=ph*0.78-signal*ph*0.58;
+    if(x===0) plethCtx.moveTo(x,y); else plethCtx.lineTo(x,y);
+  }
+  plethCtx.stroke();
+
+  requestAnimationFrame(drawTraces);
+}
+requestAnimationFrame(drawTraces);
+
+
+interval=setInterval(()=>{
+ if(finished)return;
+ t++;clock.textContent=String(Math.floor(t/60)).padStart(2,"0")+":"+String(t%60).padStart(2,"0");
+ // Passive deterioration after 75s if no oxygen or help
+ if(t%20===0 && !v.oxygen){
+   v.spo2=Math.max(81,v.spo2-.6);v.rr=Math.min(36,v.rr+.4);v.hr=Math.min(132,v.hr+.6);v.sbp=Math.max(82,v.sbp-.5);
+   update(["vs","vr","vh","vb"]);trend.textContent="langzame verslechtering";
  }
- ctx.stroke();
-}
+},1000);
 
-function drawResp(t){
- const c=document.getElementById("resp");if(!c||!v)return;
- const rect=c.getBoundingClientRect(),dpr=window.devicePixelRatio||1;
- if(c.width!==Math.floor(rect.width*dpr)||c.height!==Math.floor(rect.height*dpr)){
-   c.width=Math.floor(rect.width*dpr);c.height=Math.floor(rect.height*dpr)
- }
- const ctx=c.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);
- const w=rect.width,h=rect.height;ctx.clearRect(0,0,w,h);
-
- ctx.strokeStyle="#143a2b";ctx.lineWidth=1;
- for(let x=0;x<w;x+=20){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}
- for(let y=0;y<h;y+=20){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}
-
- const rr=Math.max(4,Math.min(45,v.rr));
- const period=60/rr;
- const amplitude=Math.max(5,Math.min(h*.33, h*(0.16 + rr/180)));
-
- ctx.strokeStyle="#5bc0ff";
- ctx.lineWidth=1.7;
- ctx.beginPath();
-
- for(let x=0;x<w;x++){
-   const time=t-(w-x)/70;
-   const ph=((time%period)+period)%period/period;
-
-   // Licht asymmetrische thorax/impedantie-achtige ademcurve:
-   // rustig oplopende inspiratie en iets langere expiratie.
-   let wave;
-   if(ph < 0.38){
-     const p=ph/0.38;
-     wave = 0.5 - 0.5*Math.cos(Math.PI*p);
-   } else {
-     const p=(ph-0.38)/0.62;
-     wave = 0.5 + 0.5*Math.cos(Math.PI*p);
-   }
-
-   // Kleine fysiologische variatie bij tachypneu.
-   const variation = Math.sin(time*0.9)*0.5;
-   const py=h*0.62 - wave*amplitude + variation;
-   if(x===0)ctx.moveTo(x,py);else ctx.lineTo(x,py);
- }
- ctx.stroke();
-
- const label=document.getElementById("respLabel");
- if(label)label.textContent=`${Math.round(v.rr)}/min`;
-}
-
-
-function quickO2(fromPanel=false){
- const desktop=document.getElementById("o2mode");
- const mobile=document.getElementById("o2mode_mobile");
- if(fromPanel && mobile && desktop) desktop.value=mobile.value;
- doIntervention("oxygen");
-}
-function toggleMobilePanel(){
- const p=document.getElementById("mobilePanel");
- if(p) p.classList.toggle("hidden");
-}
-
-function toggleSettings(){
- const el=document.getElementById("settingsCard");el.classList.toggle("hidden");
- if(!el.classList.contains("hidden")){loadSettingsInputs();window.scrollTo({top:0,behavior:"smooth"})}
-}
-function loadSettingsInputs(){
- const map={hr:CONFIG.start.hr,rr:CONFIG.start.rr,spo2:CONFIG.start.spo2,sbp:CONFIG.start.sbp,dbp:CONFIG.start.dbp,temp:CONFIG.start.temp,deterioration:CONFIG.deterioration,speed:CONFIG.simulationSpeed,o2response:CONFIG.oxygenResponse,duration:CONFIG.durationMin};
- for(const [k,val] of Object.entries(map)){const el=document.getElementById("cfg_"+k);if(el)el.value=val}
-}
-function applySettings(){
- CONFIG.start.hr=+document.getElementById("cfg_hr").value;
- CONFIG.start.rr=+document.getElementById("cfg_rr").value;
- CONFIG.start.spo2=+document.getElementById("cfg_spo2").value;
- CONFIG.start.sbp=+document.getElementById("cfg_sbp").value;
- CONFIG.start.dbp=+document.getElementById("cfg_dbp").value;
- CONFIG.start.temp=+document.getElementById("cfg_temp").value;
- CONFIG.deterioration=+document.getElementById("cfg_deterioration").value;
- CONFIG.simulationSpeed=+document.getElementById("cfg_speed").value;
- CONFIG.oxygenResponse=+document.getElementById("cfg_o2response").value;
- CONFIG.durationMin=+document.getElementById("cfg_duration").value;
- document.getElementById("settingsCard").classList.add("hidden");resetState();
-}
-function resetDefaults(){CONFIG=JSON.parse(JSON.stringify(DEFAULT_CONFIG));loadSettingsInputs();resetState()}
-
-resetState();
-requestAnimationFrame(frame);
+update();
 </script>
 </body>
 </html>
