@@ -117,8 +117,8 @@ button.secondary{background:#fff;color:var(--blue)}
 </main>
 
 <script>
-const SUPABASE_URL="VUL_HIER_JE_SUPABASE_URL_IN";
-const SUPABASE_PUBLISHABLE_KEY="VUL_HIER_JE_SUPABASE_PUBLISHABLE_KEY_IN";
+const SUPABASE_URL="https://cauzrmausrfbulfwbvoi.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY="sb_publishable_AzPgKHCxskSzfCQnIGgy-A_ZH6HuNAG";
 const ENABLED=!SUPABASE_URL.startsWith("VUL_")&&!SUPABASE_PUBLISHABLE_KEY.startsWith("VUL_");
 const sb=ENABLED?window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY):null;
 let currentSession="",timer=null;
