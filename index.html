@@ -872,8 +872,8 @@ animateWave('trend','#36d069','trend');
 refreshScore();updateMonitor();log('Casus gestart','Startwaarden geladen');
 
 // LIVE KOPPELING v19 — vul alleen deze twee regels in.
-const SUPABASE_URL="VUL_HIER_JE_SUPABASE_URL_IN";
-const SUPABASE_PUBLISHABLE_KEY="VUL_HIER_JE_SUPABASE_PUBLISHABLE_KEY_IN";
+const SUPABASE_URL="https://cauzrmausrfbulfwbvoi.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY="sb_publishable_AzPgKHCxskSzfCQnIGgy-A_ZH6HuNAG";
 const LIVE_ENABLED=!SUPABASE_URL.startsWith("VUL_")&&!SUPABASE_PUBLISHABLE_KEY.startsWith("VUL_");
 const liveDb=LIVE_ENABLED?window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY):null;
 let liveSessionCode="",liveStudentId="",liveTimer=null;
