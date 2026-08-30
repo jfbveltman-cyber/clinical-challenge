@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Clinical Challenge – Docentdashboard Jan de Vries v20 – klasproef</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+ --bg:#f4f7fa;--card:#fff;--ink:#17243a;--muted:#6b7a8d;--navy:#082b50;
+ --blue:#0b67c9;--green:#1ba45a;--orange:#f47a16;--purple:#7657cc;
+ --red:#d9433b;--line:#d6e0ea;--soft:#f7f9fc
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:Arial,Helvetica,sans-serif;color:var(--ink)}
+header{background:var(--navy);color:#fff;padding:12px 18px;position:sticky;top:0;z-index:10}
+.head{max-width:1380px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.status{padding:5px 9px;border-radius:999px;background:#ffffff22;font-size:11px}
+main{max-width:1380px;margin:12px auto;padding:0 12px 28px}
+.card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:13px;box-shadow:0 3px 12px #17324b0b}
+.top{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:end}
+h1{font-size:20px;margin:0 0 4px}h2{font-size:15px;margin:0 0 8px;color:#0c55a8}h3{font-size:12px;margin:0 0 5px}
+.muted{color:var(--muted)}.small{font-size:10px}
+input,button{border:1px solid var(--line);border-radius:7px;padding:8px 10px;font-size:12px}
+input{width:180px;text-transform:uppercase}button{background:var(--blue);color:#fff;font-weight:700;cursor:pointer}
+button.secondary{background:#fff;color:var(--blue)}
+.summary{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:10px}
+.box{background:var(--soft);border-radius:7px;padding:9px;font-size:10px}
+.box b{display:block;font-size:20px;margin-top:3px}
+.workflow{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:9px 0}
+.step{border:1px solid var(--line);border-radius:8px;padding:10px;background:#fff}
+.step h3{font-size:10px;color:#586a80}
+.pct{font-size:25px;font-weight:800}
+.bar{height:6px;background:#e7edf3;border-radius:999px;overflow:hidden;margin-top:6px}
+.fill{height:100%;width:0;background:var(--blue);transition:.3s}
+.grid2{display:grid;grid-template-columns:1.15fr .85fr;gap:9px;margin-top:9px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.metric{background:var(--soft);border:1px solid #e6edf4;border-radius:7px;padding:9px}
+.metric .big{font-size:19px;font-weight:800}
+.domain{border-top:1px solid var(--line);padding:9px 0;font-size:10px;line-height:1.35}
+.domain:first-child{border-top:0}
+.ok{color:#126f3b}.warn{color:#9a6400}.bad{color:#a52d2d}
+.tag{display:inline-block;border-radius:999px;padding:3px 6px;font-size:8px;font-weight:800;background:#eef4fb;color:#365b82}
+.table{width:100%;border-collapse:collapse;font-size:9px}
+.table th,.table td{padding:6px;border-bottom:1px solid var(--line);text-align:left}
+.demo{background:#fff8e8;border:1px solid #efcf8f;padding:7px 9px;border-radius:7px;font-size:9px;margin-top:8px}
+@media(max-width:900px){
+ .top,.grid2{grid-template-columns:1fr}.summary{grid-template-columns:1fr 1fr}.workflow{grid-template-columns:1fr 1fr}.grid3{grid-template-columns:1fr}
+}
+.studentList{margin-top:9px}.studentList table{width:100%;border-collapse:collapse;font-size:10px}.studentList th,.studentList td{padding:6px 7px;border-bottom:1px solid var(--line);text-align:left}.sync-ok{color:#16733b;font-weight:800}.sync-warn{color:#9a6400;font-weight:800}.sync-off{color:#a52d2d;font-weight:800}</style>
+</head>
+<body>
+<header><div class="head"><div><strong>Clinical Challenge</strong> • Docentdashboard • Jan de Vries v20</div><span id="conn" class="status">niet gekoppeld</span></div></header>
+<main>
+<div class="card">
+  <div class="top">
+    <div>
+      <h1>Live groepsresultaten</h1>
+      <p class="muted small" style="margin:0">v20-klasproef voor circa 35 studenten. Dashboard afgestemd op: ABCDE, interventies, herbeoordeling, SBAR, aanvullend onderzoek en differentiaaldiagnose.</p>
+    </div>
+    <div>
+      <label class="small"><b>Sessiecode</b></label><br>
+      <input id="session" placeholder="HV24B" maxlength="20">
+      <button onclick="loadNow()">Open sessie</button>
+      <button class="secondary" onclick="loadDemo()">Demo</button>
+    </div>
+  </div>
+  <div class="summary">
+    <div class="box">Actieve studenten<b id="active">0</b></div>
+    <div class="box">Afgerond<b id="done">0</b></div>
+    <div class="box">Gemiddelde score<b id="avgScore">0 / 200</b></div>
+    <div class="box">Gem. casustijd<b id="avgTime">—</b></div>
+    <div class="box">Laatste update<b id="updated">—</b></div>
+  </div>
+  <div id="demoNote" class="demo hidden">Demomodus: voorbeeldgegevens om de bijgewerkte docenteninterface te testen.</div><div class="studentList"><h2 style="margin-top:10px">Studentstatus</h2><table><thead><tr><th>Studentcode</th><th>Status</th><th>Score</th><th>Tijd</th><th>Afgerond</th></tr></thead><tbody id="studentRows"><tr><td colspan="5" class="muted">Nog geen studenten.</td></tr></tbody></table></div>
+</div>
+
+<div class="workflow">
+  <div class="step"><h3>1 • ABCDE</h3><div class="pct" id="p-abcde">0%</div><div class="bar"><div class="fill" id="b-abcde"></div></div></div>
+  <div class="step"><h3>2 • Interventies</h3><div class="pct" id="p-interventions">0%</div><div class="bar"><div class="fill" id="b-interventions"></div></div></div>
+  <div class="step"><h3>3 • Herbeoordeling</h3><div class="pct" id="p-reassessment">0%</div><div class="bar"><div class="fill" id="b-reassessment"></div></div></div>
+  <div class="step"><h3>4 • Communicatie (SBAR)</h3><div class="pct" id="p-communication">0%</div><div class="bar"><div class="fill" id="b-communication"></div></div></div>
+  <div class="step"><h3>5 • Aanvullend onderzoek</h3><div class="pct" id="p-additional">0%</div><div class="bar"><div class="fill" id="b-additional"></div></div></div>
+</div>
+
+<div class="grid2">
+  <div class="card">
+    <h2>Debriefing – groepsniveau</h2>
+    <div id="debrief"></div>
+  </div>
+  <div>
+    <div class="card">
+      <h2>Differentiaaldiagnose</h2>
+      <div class="grid3">
+        <div class="metric"><span class="small">DD opgesteld</span><div id="ddMade" class="big">0%</div></div>
+        <div class="metric"><span class="small">COPD/pneumonie genoemd</span><div id="ddLikely" class="big">0%</div></div>
+        <div class="metric"><span class="small">Acute alternatief genoemd</span><div id="ddAlt" class="big">0%</div></div>
+      </div>
+      <div class="domain"><b>Debriefvraag:</b> Welke diagnoses waren waarschijnlijk én welke diagnoses moesten studenten vanwege urgentie actief uitsluiten?</div>
+    </div>
+
+    <div class="card" style="margin-top:9px">
+      <h2>Proces & veelvoorkomende aandachtspunten</h2>
+      <table class="table">
+        <thead><tr><th>Aandachtspunt</th><th>Groep</th></tr></thead>
+        <tbody>
+          <tr><td>ABCDE-volgorde doorbroken</td><td id="errSequence">0%</td></tr>
+          <tr><td>Kritieke interventie te laat</td><td id="errLate">0%</td></tr>
+          <tr><td>Onvoldoende herbeoordeling</td><td id="errReassess">0%</td></tr>
+          <tr><td>SBAR onvolledig</td><td id="errSbar">0%</td></tr>
+          <tr><td>Geen / smalle differentiaaldiagnose</td><td id="errDD">0%</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</main>
+
+<script>
+const SUPABASE_URL="https://cauzrmausrfbulfwbvoi.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY="sb_publishable_AzPgKHCxskSzfCQnIGgy-A_ZH6HuNAG";
+const ENABLED=!SUPABASE_URL.startsWith("VUL_")&&!SUPABASE_PUBLISHABLE_KEY.startsWith("VUL_");
+const sb=ENABLED?window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY):null;
+let currentSession="",timer=null;
+
+const caps={abcde:80,interventions:60,reassessment:30,communication:20,additional:10};
+
+function setConn(t,ok=false){const e=document.getElementById("conn");e.textContent=t;e.style.background=ok?"#166534":"#7f1d1d"}
+function avg(rows,key){return rows.length?rows.reduce((s,x)=>s+(+x[key]||0),0)/rows.length:0}
+function avgAny(rows,keys){
+ if(!rows.length)return 0;
+ return rows.reduce((s,r)=>{
+   for(const k of keys){if(r[k]!==undefined&&r[k]!==null)return s+(+r[k]||0)}
+   return s;
+ },0)/rows.length
+}
+function pctValue(v,cap){return Math.max(0,Math.min(100,Math.round(v/cap*100)))}
+function setMetric(id,p,color){
+ document.getElementById("p-"+id).textContent=p+"%";
+ const f=document.getElementById("b-"+id);f.style.width=p+"%";f.style.background=color||"#0b67c9";
+}
+function ratio(rows,fn){return rows.length?Math.round(rows.filter(fn).length/rows.length*100):0}
+function fmtSec(s){
+ if(!s)return "—";const n=Math.round(s),m=Math.floor(n/60),ss=n%60;return m+":"+String(ss).padStart(2,"0");
+}
+function txt(p){
+ return p>=80?["ok","Sterk groepsresultaat. Bespreek welke keuzes dit succes verklaarden."]:
+ p>=60?["warn","Voldoende, maar met variatie. Laat studenten verschillen in aanpak expliciteren."]:
+ ["bad","Duidelijk aandachtspunt. Gebruik dit als hoofdthema in de nabespreking."];
+}
+function render(rows){
+ const now=Date.now();
+ document.getElementById("active").textContent=rows.filter(r=>r.updated_at&&now-new Date(r.updated_at).getTime()<15000).length;
+ document.getElementById("done").textContent=rows.filter(r=>r.completed||r.finished).length;
+
+ const total=avgAny(rows,["total_score","score_total","score"]);
+ document.getElementById("avgScore").textContent=Math.round(total)+" / 200";
+ document.getElementById("avgTime").textContent=fmtSec(avgAny(rows,["elapsed","elapsed_seconds","case_time"]));
+ document.getElementById("updated").textContent=rows.length&&rows.some(r=>r.updated_at)
+   ?new Date(Math.max(...rows.filter(r=>r.updated_at).map(r=>new Date(r.updated_at).getTime()))).toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit",second:"2-digit"})
+   :"—";
+
+ const sr=document.getElementById("studentRows");if(sr){sr.innerHTML=rows.length?rows.slice().sort((a,b)=>String(a.student_id||"").localeCompare(String(b.student_id||""))).map(r=>{const age=r.updated_at?Math.max(0,Math.round((now-new Date(r.updated_at).getTime())/1000)):9999;const cls=age<10?"sync-ok":age<30?"sync-warn":"sync-off";const st=age<10?"live":age<30?"traag ("+age+"s)":"offline ("+age+"s)";return `<tr><td>${r.student_id||"—"}</td><td class="${cls}">${st}</td><td>${Math.round(+r.total_score||0)}/200</td><td>${fmtSec(+r.elapsed_seconds||0)}</td><td>${r.completed?"✓":"—"}</td></tr>`}).join(""):'<tr><td colspan="5" class="muted">Nog geen studenten.</td></tr>';}
+ // Nieuwe v19-velden; fallback op oude classroom-domeinen waar dat zinvol is.
+ const vals={
+  abcde:pctValue(avgAny(rows,["abcde_score","abcde","assessment","herkennen","prioriteren"]),80),
+  interventions:pctValue(avgAny(rows,["intervention_score","interventions","handelen"]),60),
+  reassessment:pctValue(avgAny(rows,["reassessment_score","reassessment","evalueren"]),30),
+  communication:pctValue(avgAny(rows,["communication_score","communication","communiceren"]),20),
+  additional:pctValue(avgAny(rows,["additional_score","additional","diagnostics"]),10)
+ };
+ setMetric("abcde",vals.abcde,"#0b67c9");
+ setMetric("interventions",vals.interventions,"#19a55a");
+ setMetric("reassessment",vals.reassessment,"#f47a16");
+ setMetric("communication",vals.communication,"#7657cc");
+ setMetric("additional",vals.additional,"#7c8793");
+
+ const meta=[
+  ["ABCDE",vals.abcde,"Werd A→E systematisch doorlopen en werden kernbeoordelingen afgerond voordat studenten doorgingen?"],
+  ["Interventies",vals.interventions,"Waren zuurstof, bronchodilatatie, circulatoire ondersteuning en escalatie passend én tijdig?"],
+  ["Herbeoordeling",vals.reassessment,"Werd na een interventie eerst het relevante domein opnieuw beoordeeld en bij noodzaak volledig ABCDE herhaald?"],
+  ["Communicatie (SBAR)",vals.communication,"Was de overdracht compleet, concreet en gekoppeld aan actuele bevindingen en urgentie?"],
+  ["Aanvullend onderzoek",vals.additional,"Was het onderzoek gericht op het bevestigen of uitsluiten van de differentiaaldiagnose?"]
+ ];
+ document.getElementById("debrief").innerHTML=meta.map(([label,p,q])=>{
+   const [c,t]=txt(p);return `<div class="domain"><h3>${label} – ${p}%</h3><div class="${c}">${t}</div><p><b>Debriefvraag:</b> ${q}</p></div>`
+ }).join("");
+
+ const ddMade=ratio(rows,r=>(r.dd_count||r.differential_count||0)>0 || !!r.dd_present);
+ const ddLikely=ratio(rows,r=>!!(r.dd_likely||r.dd_copd_pneumonia));
+ const ddAlt=ratio(rows,r=>!!(r.dd_alternative||r.dd_acute_alternative));
+ document.getElementById("ddMade").textContent=ddMade+"%";
+ document.getElementById("ddLikely").textContent=ddLikely+"%";
+ document.getElementById("ddAlt").textContent=ddAlt+"%";
+
+ document.getElementById("errSequence").textContent=ratio(rows,r=>(+r.wrong_sequence||+r.penalty_sequence||0)>0)+"%";
+ document.getElementById("errLate").textContent=ratio(rows,r=>(+r.late_critical||+r.penalty_late||0)>0)+"%";
+ document.getElementById("errReassess").textContent=ratio(rows,r=>(+r.reassessment_score||0)<12)+"%";
+ document.getElementById("errSbar").textContent=ratio(rows,r=>(+r.communication_score||0)<15)+"%";
+ document.getElementById("errDD").textContent=ratio(rows,r=>!(r.dd_count||r.differential_count||r.dd_present))+"%";
+}
+
+async function loadNow(){
+ if(!ENABLED){alert("Vul eerst je Supabase URL en Publishable key in docent.html in. Je kunt ondertussen op Demo klikken.");return}
+ const code=(document.getElementById("session").value||"").trim().toUpperCase().replace(/[^A-Z0-9_-]/g,"");if(!code)return;
+ currentSession=code;document.getElementById("demoNote").classList.add("hidden");setConn("verbonden • "+code,true);
+ await refresh();if(timer)clearInterval(timer);timer=setInterval(refresh,2000)
+}
+async function refresh(){
+ if(!currentSession)return;
+ const {data,error}=await sb.from("classroom_results").select("*").eq("session_code",currentSession);
+ if(error){setConn("fout bij ophalen");console.error(error);return}
+ render(data||[]);
+}
+function loadDemo(){
+ if(timer)clearInterval(timer);
+ document.getElementById("demoNote").classList.remove("hidden");setConn("demomodus",true);
+ const now=new Date().toISOString();
+ const rows=Array.from({length:18},(_,i)=>({
+   updated_at:now,completed:i<13,total_score:105+(i%7)*9,elapsed_seconds:390+(i%5)*35,
+   abcde_score:50+(i%6)*5,intervention_score:32+(i%5)*5,reassessment_score:12+(i%4)*4,
+   communication_score:10+(i%4)*3,additional_score:4+(i%4)*2,
+   dd_count:i%5===0?0:2+(i%3),dd_present:i%5!==0,dd_likely:i%4!==0,dd_alternative:i%3===0,
+   wrong_sequence:i%4===0?1:0,late_critical:i%6===0?1:0
+ }));
+ render(rows);
+}
+if(!ENABLED)setConn("Supabase nog instellen");
+</script>
+</body></html>
