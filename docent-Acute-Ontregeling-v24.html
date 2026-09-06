@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Clinical Challenge – Docentdashboard Acute Ontregeling v24</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg:#f4f7fa;--card:#fff;--ink:#17243a;--muted:#6b7a8d;--navy:#082b50;--blue:#0b67c9;--green:#1ba45a;--orange:#f47a16;--purple:#7657cc;--red:#d9433b;--line:#d6e0ea;--soft:#f7f9fc}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Arial,Helvetica,sans-serif;color:var(--ink)}
+header{background:var(--navy);color:#fff;padding:12px 18px;position:sticky;top:0;z-index:10}
+.head{max-width:1380px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.status{padding:5px 9px;border-radius:999px;background:#ffffff22;font-size:11px}
+main{max-width:1380px;margin:12px auto;padding:0 12px 28px}
+.card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:13px;box-shadow:0 3px 12px #17324b0b}
+.top{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:end}
+h1{font-size:20px;margin:0 0 4px}h2{font-size:15px;margin:0 0 8px;color:#0c55a8}h3{font-size:12px;margin:0 0 5px}
+.muted{color:var(--muted)}.small{font-size:10px}.hidden{display:none!important}
+input,button{border:1px solid var(--line);border-radius:7px;padding:8px 10px;font-size:12px}
+input{width:180px;text-transform:uppercase}button{background:var(--blue);color:#fff;font-weight:700;cursor:pointer}button.secondary{background:#fff;color:var(--blue)}
+.summary{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:10px}.box{background:var(--soft);border-radius:7px;padding:9px;font-size:10px}.box b{display:block;font-size:20px;margin-top:3px}
+.workflow{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:9px 0}.step{border:1px solid var(--line);border-radius:8px;padding:10px;background:#fff}.step h3{font-size:10px;color:#586a80}.pct{font-size:25px;font-weight:800}
+.bar{height:6px;background:#e7edf3;border-radius:999px;overflow:hidden;margin-top:6px}.fill{height:100%;width:0;background:var(--blue);transition:.3s}
+.grid2{display:grid;grid-template-columns:1.1fr .9fr;gap:9px;margin-top:9px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.metric{background:var(--soft);border:1px solid #e6edf4;border-radius:7px;padding:9px}.metric .big{font-size:19px;font-weight:800}
+.domain{border-top:1px solid var(--line);padding:9px 0;font-size:10px;line-height:1.35}.domain:first-child{border-top:0}.ok{color:#126f3b}.warn{color:#9a6400}.bad{color:#a52d2d}
+.table,.studentList table{width:100%;border-collapse:collapse;font-size:10px}.table th,.table td,.studentList th,.studentList td{padding:6px 7px;border-bottom:1px solid var(--line);text-align:left}
+.demo{background:#fff8e8;border:1px solid #efcf8f;padding:7px 9px;border-radius:7px;font-size:9px;margin-top:8px}
+.sync-ok{color:#16733b;font-weight:800}.sync-warn{color:#9a6400;font-weight:800}.sync-off{color:#a52d2d;font-weight:800}
+.secret{margin-top:9px;padding:8px;border-radius:7px;background:#fff1f0;border:1px solid #f3b6b2;font-size:10px}
+@media(max-width:900px){.top,.grid2{grid-template-columns:1fr}.summary{grid-template-columns:1fr 1fr}.workflow{grid-template-columns:1fr 1fr}.grid3{grid-template-columns:1fr}}
+</style></head>
+<body>
+<header><div class="head"><div><strong>Clinical Challenge</strong> • Docentdashboard • Acute Ontregeling v24</div><span id="conn" class="status">niet gekoppeld</span></div></header>
+<main>
+<div class="card">
+ <div class="top">
+  <div>
+   <h1>Live groepsresultaten</h1>
+   <p class="muted small" style="margin:0">Acute Ontregeling v24 • 15 minuten • live inzicht in ABCDE, interventies, herbeoordeling, klinisch redeneren en SBAR.</p>
+   <div class="secret"><b>Docentinformatie:</b> hoofddiagnose = diabetische ketoacidose bij DM type 1. Niet vooraf aan studenten tonen.</div>
+  </div>
+  <div><label class="small"><b>Sessiecode</b></label><br><input id="session" value="ACUUT24" maxlength="20"> <button onclick="loadNow()">Open sessie</button> <button class="secondary" onclick="loadDemo()">Demo</button></div>
+ </div>
+ <div class="summary">
+  <div class="box">Actieve studenten<b id="active">0</b></div><div class="box">Afgerond<b id="done">0</b></div>
+  <div class="box">Gemiddelde score<b id="avgScore">0 / 200</b></div><div class="box">Gem. casustijd<b id="avgTime">—</b></div><div class="box">Laatste update<b id="updated">—</b></div>
+ </div>
+ <div id="demoNote" class="demo hidden">Demomodus: voorbeeldgegevens voor Acute Ontregeling v24. Niet opgeslagen.</div>
+ <div class="studentList"><h2 style="margin-top:12px">Studentstatus</h2><table><thead><tr><th>Studentcode</th><th>Status</th><th>Score</th><th>Tijd</th><th>DD</th><th>Hoofddiagnose</th></tr></thead><tbody id="studentRows"><tr><td colspan="6" class="muted">Nog geen studenten.</td></tr></tbody></table></div>
+</div>
+
+<div class="workflow">
+ <div class="step"><h3>ABCDE</h3><div class="pct" id="p-abcde">0%</div><div class="bar"><div class="fill" id="b-abcde"></div></div></div>
+ <div class="step"><h3>Interventies</h3><div class="pct" id="p-interventions">0%</div><div class="bar"><div class="fill" id="b-interventions"></div></div></div>
+ <div class="step"><h3>Herbeoordeling</h3><div class="pct" id="p-reassessment">0%</div><div class="bar"><div class="fill" id="b-reassessment"></div></div></div>
+ <div class="step"><h3>Klinisch redeneren</h3><div class="pct" id="p-reasoning">0%</div><div class="bar"><div class="fill" id="b-reasoning"></div></div></div>
+ <div class="step"><h3>SBAR</h3><div class="pct" id="p-sbar">0%</div><div class="bar"><div class="fill" id="b-sbar"></div></div></div>
+</div>
+
+<div class="grid2">
+ <div class="card"><h2>Debriefing – groepsniveau</h2><div id="debrief"></div></div>
+ <div>
+  <div class="card"><h2>Differentiaaldiagnose</h2><div class="grid3">
+   <div class="metric"><span class="small">≥3 DD's</span><div id="ddMade" class="big">0%</div></div>
+   <div class="metric"><span class="small">Hoofddiagnose herkend</span><div id="ddLikely" class="big">0%</div></div>
+   <div class="metric"><span class="small">Elektrolyten beoordeeld</span><div id="electro" class="big">0%</div></div>
+  </div></div>
+  <div class="card" style="margin-top:9px"><h2>Docentfocus</h2>
+   <table class="table"><tbody>
+    <tr><td>Vocht tijdig gestart</td><td>bespreek circulatie-effect en herbeoordeling</td></tr>
+    <tr><td>Insuline</td><td>koppel aan elektrolyten/kalium en dynamische waarden</td></tr>
+    <tr><td>Glucose &lt;14</td><td>glucose-infuus toevoegen terwijl metabole behandeling doorgaat</td></tr>
+    <tr><td>SBAR</td><td>S vooraf deels ingevuld; alleen studenttoevoeging telt inhoudelijk mee</td></tr>
+   </tbody></table>
+  </div>
+ </div>
+</div>
+</main>
+<script>
+const SUPABASE_URL="https://cauzrmausrfbulfwbvoi.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY="sb_publishable_AzPgKHCxskSzfCQnIGgy-A_ZH6HuNAG";
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+let currentSession="",timer=null;
+const caps={abcde:35,interventions:55,reassessment:35,sbar:35};
+
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function setConn(t,ok=false){const e=document.getElementById("conn");e.textContent=t;e.style.background=ok?"#166534":"#7f1d1d"}
+function avg(rows,key){return rows.length?rows.reduce((s,x)=>s+(+x[key]||0),0)/rows.length:0}
+function ratio(rows,fn){return rows.length?Math.round(rows.filter(fn).length/rows.length*100):0}
+function pct(v,cap){return Math.max(0,Math.min(100,Math.round(v/cap*100)))}
+function setMetric(id,p,color){document.getElementById("p-"+id).textContent=p+"%";const f=document.getElementById("b-"+id);f.style.width=p+"%";f.style.background=color}
+function fmtSec(s){if(!s)return"—";const n=Math.round(s),m=Math.floor(n/60),ss=n%60;return m+":"+String(ss).padStart(2,"0")}
+function txt(p){return p>=80?["ok","Sterk groepsresultaat. Vraag welke observaties en keuzes dit ondersteunden."]:p>=60?["warn","Voldoende, met variatie. Laat studenten verschillen in aanpak vergelijken."]:["bad","Duidelijk aandachtspunt voor de nabespreking."]}
+async function loadNow(){
+ const code=(document.getElementById("session").value||"ACUUT24").trim().toUpperCase().replace(/[^A-Z0-9_-]/g,"");
+ if(!code)return;
+ currentSession=code;document.getElementById("demoNote").classList.add("hidden");setConn("verbonden • "+code,true);
+ await refresh();if(timer)clearInterval(timer);timer=setInterval(refresh,2000)
+}
+async function refresh(){
+ if(!currentSession)return;
+ const {data,error}=await sb.from("classroom_results").select("*").eq("session_code",currentSession);
+ if(error){setConn("fout bij ophalen");console.error(error);return}
+ render(data||[]);
+}
+function render(rows){
+ const now=Date.now();
+ document.getElementById("active").textContent=rows.filter(r=>!r.completed&&r.updated_at&&now-new Date(r.updated_at).getTime()<15000).length;
+ document.getElementById("done").textContent=rows.filter(r=>r.completed).length;
+ document.getElementById("avgScore").textContent=Math.round(avg(rows,"total_score"))+" / 200";
+ document.getElementById("avgTime").textContent=fmtSec(avg(rows,"elapsed_seconds"));
+ document.getElementById("updated").textContent=rows.length&&rows.some(r=>r.updated_at)?new Date(Math.max(...rows.filter(r=>r.updated_at).map(r=>new Date(r.updated_at).getTime()))).toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit",second:"2-digit"}):"—";
+
+ document.getElementById("studentRows").innerHTML=rows.length?rows.slice().sort((a,b)=>String(a.student_id||"").localeCompare(String(b.student_id||""))).map(r=>{
+  const age=r.updated_at?Math.max(0,Math.round((now-new Date(r.updated_at).getTime())/1000)):9999;
+  const cls=r.completed?"sync-ok":age<10?"sync-ok":age<30?"sync-warn":"sync-off";
+  const st=r.completed?"afgerond":age<10?"live":age<30?"traag":"offline";
+  return `<tr><td>${esc(r.student_id||"—")}</td><td class="${cls}">${st}</td><td>${Math.round(+r.total_score||0)}/200</td><td>${fmtSec(+r.elapsed_seconds||0)}</td><td>${+r.dd_count||0}</td><td>${r.dd_likely?"✓":"—"}</td></tr>`;
+ }).join(""):'<tr><td colspan="6" class="muted">Nog geen studenten.</td></tr>';
+
+ const abcde=pct(avg(rows,"abcde_score"),35);
+ const interventions=pct(avg(rows,"intervention_score"),55);
+ const reassessment=pct(avg(rows,"reassessment_score"),35);
+ const sbar=pct(avg(rows,"communication_score"),35);
+ const dd3=ratio(rows,r=>(+r.dd_count||0)>=3);
+ const likely=ratio(rows,r=>!!r.dd_likely);
+ const electro=ratio(rows,r=>(+r.additional_score||0)>=10);
+ const reasoning=Math.round((dd3+likely+electro)/3);
+
+ setMetric("abcde",abcde,"#0b67c9");setMetric("interventions",interventions,"#19a55a");setMetric("reassessment",reassessment,"#f47a16");setMetric("reasoning",reasoning,"#b18a00");setMetric("sbar",sbar,"#7657cc");
+ document.getElementById("ddMade").textContent=dd3+"%";document.getElementById("ddLikely").textContent=likely+"%";document.getElementById("electro").textContent=electro+"%";
+
+ const meta=[
+  ["ABCDE",abcde,"Welke B-, C- en D-afwijkingen waren bij deze patiënt bepalend voor urgentie?"],
+  ["Interventies",interventions,"Werd eerst circulatie ondersteund en werd insuline gekoppeld aan elektrolyten/kalium?"],
+  ["Herbeoordeling",reassessment,"Welke veranderingen waren zichtbaar na vocht en insuline, en werd daarop bijgestuurd?"],
+  ["Klinisch redeneren",reasoning,"Hoe combineerden studenten hyperglykemie, ketonen, acidose en kliniek tot hun hoofddiagnose?"],
+  ["SBAR",sbar,"Was de S actueel aangevuld, de A klinisch onderbouwd en de R concreet genoeg voor directe actie?"]
+ ];
+ document.getElementById("debrief").innerHTML=meta.map(([label,p,q])=>{const[c,t]=txt(p);return `<div class="domain"><h3>${label} – ${p}%</h3><div class="${c}">${t}</div><p><b>Debriefvraag:</b> ${q}</p></div>`}).join("");
+}
+function loadDemo(){
+ if(timer)clearInterval(timer);document.getElementById("demoNote").classList.remove("hidden");setConn("demomodus",true);
+ const now=new Date().toISOString();
+ const rows=Array.from({length:18},(_,i)=>({student_id:"STU"+String(i+1).padStart(2,"0"),updated_at:now,completed:i<12,total_score:105+(i%7)*12,elapsed_seconds:500+(i%6)*50,abcde_score:21+(i%5)*3.5,intervention_score:28+(i%5)*6,reassessment_score:14+(i%4)*7,communication_score:14+(i%5)*5,additional_score:i%4?10:0,dd_count:i%5===0?1:3,dd_likely:i%4!==0}));
+ render(rows);
+}
+document.getElementById("session").addEventListener("keydown",e=>{if(e.key==="Enter")loadNow()});
+</script></body></html>
